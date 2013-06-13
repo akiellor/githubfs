@@ -15,13 +15,13 @@ import static org.mockito.Mockito.verify;
 @PrepareForTest(DirectoryFiller.class)
 public class ListingIssueHandlerTest {
     @Mock DirectoryFiller filler;
-    @Mock Issue issue;
+    @Mock Writeable writeable;
 
     @Test
     public void shouldAddDirectoryForFoundPath() {
         ListingIssueHandler handler = new ListingIssueHandler(new Path("/"), filler);
 
-        handler.found(new Path("/foo"), issue);
+        handler.found(new Path("/foo"), writeable);
 
         verify(filler).add("foo");
     }
@@ -30,7 +30,7 @@ public class ListingIssueHandlerTest {
     public void shouldAddDirectoryRelativeToProvidedPath() {
         ListingIssueHandler handler = new ListingIssueHandler(new Path("/foo"), filler);
 
-        handler.found(new Path("/foo/bar"), issue);
+        handler.found(new Path("/foo/bar"), writeable);
 
         verify(filler).add("bar");
     }
@@ -39,7 +39,7 @@ public class ListingIssueHandlerTest {
     public void shouldAddDirectoryOnlyIfTheRelativeDirectoryIsTheParent() {
         ListingIssueHandler handler = new ListingIssueHandler(new Path("/foo"), filler);
 
-        handler.found(new Path("/foo/bar/baz"), issue);
+        handler.found(new Path("/foo/bar/baz"), writeable);
 
         verify(filler, never()).add(anyString());
     }

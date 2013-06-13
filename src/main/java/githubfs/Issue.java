@@ -1,6 +1,6 @@
 package githubfs;
 
-public class Issue {
+public class Issue implements Writeable {
     private final String body;
 
     public Issue(String body) {

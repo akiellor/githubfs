@@ -9,10 +9,10 @@ import net.fusejna.util.FuseFilesystemAdapterFull;
 import java.nio.ByteBuffer;
 
 public class FileSystem extends FuseFilesystemAdapterFull {
-    private final Issues issues;
+    private final Mountable mountable;
 
-    public FileSystem(Issues issues){
-        this.issues = issues;
+    public FileSystem(Mountable mountable){
+        this.mountable = mountable;
     }
 
     @Override
@@ -21,8 +21,8 @@ public class FileSystem extends FuseFilesystemAdapterFull {
             stat.nlink(1);
             stat.setMode(TypeMode.NodeType.DIRECTORY, true, false, true);
         } else {
-            issues.with(new Path(path), new Issues.Handler() {
-                 @Override public void found(Path path, Issue issue) {
+            mountable.with(new Path(path), new Mountable.Handler() {
+                 @Override public void found(Path path, Writeable issue) {
                     issue.write(new StatFile(stat));
                 }
             });
@@ -33,18 +33,18 @@ public class FileSystem extends FuseFilesystemAdapterFull {
     @Override
     public int read(String path, final ByteBuffer buffer, long size, long offset, final StructFuseFileInfo.FileInfoWrapper info) {
         WritingIssueHandler handler = new WritingIssueHandler(buffer, info);
-        issues.with(new Path(path), handler);
+        mountable.with(new Path(path), handler);
         return handler.bytesWritten;
     }
 
     @Override
     public int readdir(String path, final DirectoryFiller filler) {
         filler.add(".", "..");
-        issues.all(new ListingIssueHandler(new Path(path), filler));
+        mountable.all(new ListingIssueHandler(new Path(path), filler));
         return 0;
     }
 
-    public class WritingIssueHandler implements Issues.Handler{
+    public class WritingIssueHandler implements Mountable.Handler{
         private final ByteBuffer buffer;
         private final StructFuseFileInfo.FileInfoWrapper info;
         private int bytesWritten;
@@ -54,11 +54,10 @@ public class FileSystem extends FuseFilesystemAdapterFull {
             this.info = info;
         }
 
-        @Override public void found(Path path, Issue issue) {
-
-            buffer.put(issue.getBody().getBytes());
-            info.flush();
-            bytesWritten = issue.getBody().length();
+        @Override public void found(Path path, Writeable writeable) {
+            ReadFile file = new ReadFile(buffer, info);
+            writeable.write(file);
+            this.bytesWritten = file.getBytesWritten();
         }
     }
 }

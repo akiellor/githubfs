@@ -10,28 +10,28 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InMemoryIssuesTest {
-    @Mock Issues.Handler handler;
+public class InMemoryWriteablesTest {
+    @Mock Mountable.Handler handler;
 
-    Issues issues = new InMemoryIssues();
+    Mountable mountable = new InMemoryWriteables();
     Issue foo = new Issue("foo");
     Issue bar = new Issue("bar");
 
     @Test
     public void shouldPutAndGetByPath() {
-        issues.put(new Path("foo"), foo);
+        mountable.put(new Path("foo"), foo);
 
-        issues.with(new Path("foo"), handler);
+        mountable.with(new Path("foo"), handler);
 
         verify(handler).found(new Path("foo"), foo);
     }
 
     @Test
     public void shouldGetAllElements() {
-        issues.put(new Path("foo"), foo);
-        issues.put(new Path("bar"), bar);
+        mountable.put(new Path("foo"), foo);
+        mountable.put(new Path("bar"), bar);
 
-        issues.all(handler);
+        mountable.all(handler);
 
         verify(handler).found(new Path("foo"), foo);
         verify(handler).found(new Path("bar"), bar);
@@ -39,7 +39,7 @@ public class InMemoryIssuesTest {
 
     @Test
     public void shouldNotFindElement() {
-        issues.with(new Path("foo"), handler);
+        mountable.with(new Path("foo"), handler);
 
         verify(handler, never()).found(any(Path.class), any(Issue.class));
     }

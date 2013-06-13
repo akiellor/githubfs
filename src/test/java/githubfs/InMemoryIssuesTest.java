@@ -20,7 +20,7 @@ public class InMemoryIssuesTest {
 
         issues.with(new Path("foo"), handler);
 
-        verify(handler).found(issue);
+        verify(handler).found(new Path("foo"), issue);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class InMemoryIssuesTest {
 
         issues.all(handler);
 
-        verify(handler).found(foo);
-        verify(handler).found(bar);
+        verify(handler).found(new Path("foo"), foo);
+        verify(handler).found(new Path("bar"), bar);
     }
 }

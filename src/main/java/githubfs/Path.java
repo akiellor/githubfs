@@ -23,4 +23,8 @@ public class Path {
     public int hashCode() {
         return key != null ? key.hashCode() : 0;
     }
+
+    public String asPathString() {
+        return key;
+    }
 }

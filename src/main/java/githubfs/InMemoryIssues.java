@@ -11,12 +11,12 @@ public class InMemoryIssues implements Issues{
     }
 
     @Override public void with(Path path, Handler handler) {
-        handler.found(issues.get(path));
+        handler.found(path, issues.get(path));
     }
 
     @Override public void all(Handler handler) {
-        for(Issue issue : issues.values()){
-            handler.found(issue);
+        for(Map.Entry<Path, Issue> entry : issues.entrySet()){
+            handler.found(entry.getKey(), entry.getValue());
         }
     }
 }

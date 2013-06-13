@@ -8,6 +8,6 @@ public interface Issues {
     void all(Handler handler);
 
     public interface Handler {
-        void found(Issue issue);
+        void found(Path path, Issue issue);
     }
 }

@@ -21,7 +21,7 @@ public class FileSystem extends FuseFilesystemAdapterFull {
             stat.nlink(1);
             stat.setMode(TypeMode.NodeType.DIRECTORY, true, false, true);
         } else {
-            issues.with(new Path(path.substring(1)), new Issues.Handler() {
+            issues.with(new Path(path), new Issues.Handler() {
                 @Override public void found(Path path, Issue issue) {
                     stat.nlink(1);
                     stat.setMode(TypeMode.NodeType.FILE, true, false, false);
@@ -35,7 +35,7 @@ public class FileSystem extends FuseFilesystemAdapterFull {
     @Override
     public int read(String path, final ByteBuffer buffer, long size, long offset, final StructFuseFileInfo.FileInfoWrapper info) {
         WritingIssueHandler handler = new WritingIssueHandler(buffer, info);
-        issues.with(new Path(path.substring(1)), handler);
+        issues.with(new Path(path), handler);
         return handler.bytesWritten;
     }
 

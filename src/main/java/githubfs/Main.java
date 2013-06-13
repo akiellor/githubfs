@@ -17,7 +17,7 @@ public class Main {
             GHRepository repository = github.getRepository(args[2]);
             List<GHIssue> fetchedIssues = repository.getIssues(GHIssueState.OPEN);
             for(GHIssue issue : fetchedIssues){
-                issues.put(new Path(String.valueOf(issue.getNumber())), new Issue(issue.getBody()));
+                issues.put(new Path("/" + String.valueOf(issue.getNumber())), new Issue(issue.getBody()));
             }
 
             FileSystem fileSystem = new FileSystem(issues);

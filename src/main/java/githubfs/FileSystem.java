@@ -25,7 +25,7 @@ public class FileSystem extends FuseFilesystemAdapterFull {
                 @Override public void found(Path path, Issue issue) {
                     stat.nlink(1);
                     stat.setMode(TypeMode.NodeType.FILE, true, false, false);
-                    stat.size(7);
+                    stat.size(issue.getBody().length());
                 }
             });
         }
@@ -34,13 +34,9 @@ public class FileSystem extends FuseFilesystemAdapterFull {
 
     @Override
     public int read(String path, final ByteBuffer buffer, long size, long offset, final StructFuseFileInfo.FileInfoWrapper info) {
-        issues.with(new Path(path.substring(1)), new Issues.Handler() {
-            @Override public void found(Path path, Issue issue) {
-                buffer.put("       ".getBytes());
-                info.flush();
-            }
-        });
-        return 7;
+        WritingIssueHandler handler = new WritingIssueHandler(buffer, info);
+        issues.with(new Path(path.substring(1)), handler);
+        return handler.bytesWritten;
     }
 
     @Override
@@ -52,5 +48,22 @@ public class FileSystem extends FuseFilesystemAdapterFull {
             }
         });
         return 0;
+    }
+
+    public class WritingIssueHandler implements Issues.Handler{
+        private final ByteBuffer buffer;
+        private final StructFuseFileInfo.FileInfoWrapper info;
+        private int bytesWritten;
+
+        public WritingIssueHandler(ByteBuffer buffer, StructFuseFileInfo.FileInfoWrapper info){
+            this.buffer = buffer;
+            this.info = info;
+        }
+
+        @Override public void found(Path path, Issue issue) {
+            buffer.put(issue.getBody().getBytes());
+            info.flush();
+            bytesWritten = issue.getBody().length();
+        }
     }
 }

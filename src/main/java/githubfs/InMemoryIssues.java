@@ -11,7 +11,9 @@ public class InMemoryIssues implements Issues{
     }
 
     @Override public void with(Path path, Handler handler) {
-        handler.found(path, issues.get(path));
+        if(issues.containsKey(path)){
+            handler.found(path, issues.get(path));
+        }
     }
 
     @Override public void all(Handler handler) {

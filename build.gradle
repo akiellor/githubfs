@@ -1,5 +1,10 @@
 apply plugin: 'idea'
 apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "githubfs.Main"
+applicationName = "githubfs"
+archivesBaseName = "githubfs"
 
 repositories {
   mavenCentral()

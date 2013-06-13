@@ -42,11 +42,7 @@ public class FileSystem extends FuseFilesystemAdapterFull {
     @Override
     public int readdir(String path, final DirectoryFiller filler) {
         filler.add(".", "..");
-        issues.all(new Issues.Handler() {
-            @Override public void found(Path path, Issue issue) {
-                filler.add(path.asPathString());
-            }
-        });
+        issues.all(new ListingIssueHandler(new Path(path), new DirectoryFillerListing(filler)));
         return 0;
     }
 
@@ -64,6 +60,18 @@ public class FileSystem extends FuseFilesystemAdapterFull {
             buffer.put(issue.getBody().getBytes());
             info.flush();
             bytesWritten = issue.getBody().length();
+        }
+    }
+
+    private class DirectoryFillerListing implements DirectoryListing {
+        private final DirectoryFiller filler;
+
+        public DirectoryFillerListing(DirectoryFiller filler) {
+            this.filler = filler;
+        }
+
+        @Override public void add(String entry) {
+            filler.add(entry);
         }
     }
 }

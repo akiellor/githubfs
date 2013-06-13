@@ -1,0 +1,16 @@
+apply plugin: 'idea'
+apply plugin: 'java'
+
+repositories {
+  mavenCentral()
+  flatDir { dirs 'lib/main', 'lib/test' }
+}
+
+dependencies {
+  compile name: 'fuse-jna'
+  compile 'org.kohsuke:github-api:1.42'
+  compile 'net.java.dev.jna:jna:3.5.2'
+
+  testCompile 'junit:junit:4.11'
+  testCompile 'org.mockito:mockito-all:1.9.5'
+}

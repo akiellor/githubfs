@@ -11,6 +11,6 @@ To Try It.
 1. Install either OSXFuse (OSX) or libfuse (Linux)
 2. gradle distZip
 3. unzip build/distributions/githubfs.zip -d .
-4. ./githubfs/bin/githubfs <your-mountpoint>
+4. ./githubfs/bin/githubfs <your-username> <your-oauthkey> akiellor/githubfs <your-mountpoint>
 5. ls <your-mountpoint>
 

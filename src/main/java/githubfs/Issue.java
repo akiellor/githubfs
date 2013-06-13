@@ -10,4 +10,9 @@ public class Issue {
     public String getBody() {
         return body;
     }
+
+    public void write(File file) {
+        file.content(body);
+        file.readable();
+    }
 }

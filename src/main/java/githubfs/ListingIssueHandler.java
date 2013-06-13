@@ -1,17 +1,19 @@
 package githubfs;
 
+import net.fusejna.DirectoryFiller;
+
 public class ListingIssueHandler implements Issues.Handler {
     private final Path parent;
-    private final DirectoryListing listing;
+    private final DirectoryFiller filler;
 
-    public ListingIssueHandler(Path parent, DirectoryListing listing) {
+    public ListingIssueHandler(Path parent, DirectoryFiller filler) {
         this.parent = parent;
-        this.listing = listing;
+        this.filler = filler;
     }
 
     @Override public void found(Path path, Issue issue) {
         if(parent.isParentOf(path)){
-            listing.add(path.basename());
+            filler.add(path.basename());
         }
     }
 }

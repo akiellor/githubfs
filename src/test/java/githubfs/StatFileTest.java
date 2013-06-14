@@ -33,6 +33,6 @@ public class StatFileTest {
     public void shouldMarkAsDirectory() {
         new StatFile(stat).directory();
 
-        verify(stat).setMode(TypeMode.NodeType.DIRECTORY, true, false, false);
+        verify(stat).setMode(TypeMode.NodeType.DIRECTORY, true, false, true);
     }
 }

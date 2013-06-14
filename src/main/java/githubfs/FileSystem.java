@@ -33,7 +33,6 @@ public class FileSystem extends FuseFilesystemAdapterFull {
 
     @Override
     public int readdir(String path, final DirectoryFiller filler) {
-        filler.add(".", "..");
         mountable.all(new ListingIssueHandler(new Path(path), filler));
         return 0;
     }

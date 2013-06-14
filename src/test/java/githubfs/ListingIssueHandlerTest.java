@@ -23,6 +23,8 @@ public class ListingIssueHandlerTest {
 
         handler.found(new Path("/foo"), writeable);
 
+        verify(filler).add(".");
+        verify(filler).add("..");
         verify(filler).add("foo");
     }
 
@@ -32,6 +34,20 @@ public class ListingIssueHandlerTest {
 
         handler.found(new Path("/foo/bar"), writeable);
 
+        verify(filler).add(".");
+        verify(filler).add("..");
+        verify(filler).add("bar");
+    }
+
+    @Test
+    public void shouldNotAddDotDirsForMultipleFiles() {
+        ListingIssueHandler handler = new ListingIssueHandler(new Path("/foo"), filler);
+
+        handler.found(new Path("/foo/bar"), writeable);
+        handler.found(new Path("/foo/baz"), writeable);
+
+        verify(filler).add(".");
+        verify(filler).add("..");
         verify(filler).add("bar");
     }
 

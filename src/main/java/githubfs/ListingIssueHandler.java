@@ -11,7 +11,7 @@ public class ListingIssueHandler implements Mountable.Handler {
         this.filler = filler;
     }
 
-    @Override public void found(Path path, Writeable issue) {
+    @Override public void found(Path path, Node issue) {
         if(parent.isParentOf(path)){
             filler.add(path.basename());
         }

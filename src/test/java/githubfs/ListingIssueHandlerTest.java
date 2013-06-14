@@ -15,7 +15,7 @@ import static org.mockito.Mockito.verify;
 @PrepareForTest(DirectoryFiller.class)
 public class ListingIssueHandlerTest {
     @Mock DirectoryFiller filler;
-    @Mock Writeable writeable;
+    @Mock Node writeable;
 
     @Test
     public void shouldAddDirectoryForFoundPath() {

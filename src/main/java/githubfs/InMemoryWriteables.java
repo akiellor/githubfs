@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryWriteables implements Mountable {
-    private Map<Path, Writeable> writables = new ConcurrentHashMap<Path, Writeable>();
+    private Map<Path, Node> writables = new ConcurrentHashMap<Path, Node>();
 
-    @Override public void put(Path path, Writeable issue) {
+    @Override public void put(Path path, Node issue) {
         writables.put(path, issue);
     }
 
@@ -17,7 +17,7 @@ public class InMemoryWriteables implements Mountable {
     }
 
     @Override public void all(Handler handler) {
-        for(Map.Entry<Path, Writeable> entry : writables.entrySet()){
+        for(Map.Entry<Path, Node> entry : writables.entrySet()){
             handler.found(entry.getKey(), entry.getValue());
         }
     }

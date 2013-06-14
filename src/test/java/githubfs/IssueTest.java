@@ -13,7 +13,7 @@ public class IssueTest {
 
     @Test
     public void shouldWriteToFile() {
-        new Issue("foo").write(file);
+        new Issue("foo").describe(file);
 
         verify(file).content("foo");
         verify(file).readable();

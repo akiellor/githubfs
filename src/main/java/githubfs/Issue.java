@@ -1,6 +1,6 @@
 package githubfs;
 
-public class Issue implements Writeable {
+public class Issue implements Node {
     private final String body;
 
     public Issue(String body) {
@@ -11,7 +11,7 @@ public class Issue implements Writeable {
         return body;
     }
 
-    public void write(File file) {
+    public void describe(File file) {
         file.content(body);
         file.readable();
     }

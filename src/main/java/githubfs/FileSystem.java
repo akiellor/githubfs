@@ -22,8 +22,8 @@ public class FileSystem extends FuseFilesystemAdapterFull {
             stat.setMode(TypeMode.NodeType.DIRECTORY, true, false, true);
         } else {
             mountable.with(new Path(path), new Mountable.Handler() {
-                 @Override public void found(Path path, Writeable issue) {
-                    issue.write(new StatFile(stat));
+                 @Override public void found(Path path, Node issue) {
+                    issue.describe(new StatFile(stat));
                 }
             });
         }
@@ -54,9 +54,9 @@ public class FileSystem extends FuseFilesystemAdapterFull {
             this.info = info;
         }
 
-        @Override public void found(Path path, Writeable writeable) {
+        @Override public void found(Path path, Node node) {
             ReadFile file = new ReadFile(buffer, info);
-            writeable.write(file);
+            node.describe(file);
             this.bytesWritten = file.getBytesWritten();
         }
     }

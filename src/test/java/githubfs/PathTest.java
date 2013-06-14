@@ -1,6 +1,5 @@
 package githubfs;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -44,7 +43,7 @@ public class PathTest {
 
     @Test
     public void shouldProvideAncestorPaths() {
-        assertThat(Path.ROOT.ancestors(), CoreMatchers.<Path>hasItems());
+        assertTrue(Path.ROOT.ancestors().isEmpty());
         assertThat(new Path("/foo").ancestors(), hasItems(Path.ROOT));
         assertThat(new Path("/foo/bar").ancestors(), hasItems(Path.ROOT, new Path("/foo")));
 

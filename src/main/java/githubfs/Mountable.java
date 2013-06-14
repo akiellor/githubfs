@@ -3,11 +3,12 @@ package githubfs;
 public interface Mountable {
     void put(Path path, Node writable);
 
-    void with(Path path, Handler handler);
+    <T> T with(Path path, Handler<T> handler);
 
-    void all(Handler handler);
+    <T> T all(Handler<T> handler);
 
-    public interface Handler {
+    public interface Handler<T> {
         void found(Path path, Node writeable);
+        T result();
     }
 }

@@ -1,12 +1,15 @@
 package githubfs;
 
 import net.fusejna.DirectoryFiller;
+import net.fusejna.ErrorCodes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -16,6 +19,22 @@ import static org.mockito.Mockito.verify;
 public class ListingIssueHandlerTest {
     @Mock DirectoryFiller filler;
     @Mock Node writeable;
+
+    @Test
+    public void shouldHaveENOENTWhenNothingFound() {
+        ListingIssueHandler handler = new ListingIssueHandler(new Path("/"), filler);
+
+        assertThat(handler.result(), equalTo(-ErrorCodes.ENOENT));
+    }
+
+    @Test
+    public void shouldHave0ResultWhenFoundSomething() {
+        ListingIssueHandler handler = new ListingIssueHandler(new Path("/"), filler);
+
+        handler.found(new Path("/foo"), writeable);
+
+        assertThat(handler.result(), equalTo(0));
+    }
 
     @Test
     public void shouldAddDirectoryForFoundPath() {

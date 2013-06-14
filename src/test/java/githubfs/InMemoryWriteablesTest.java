@@ -5,14 +5,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InMemoryWriteablesTest {
-    @Mock Mountable.Handler handler;
+    @Mock Mountable.Handler<Integer> handler;
 
     Mountable mountable = new InMemoryWriteables();
     Issue foo = new Issue("/foo");
@@ -50,5 +52,23 @@ public class InMemoryWriteablesTest {
         mountable.with(new Path("/foo"), handler);
 
         verify(handler, never()).found(any(Path.class), any(Issue.class));
+    }
+
+    @Test
+    public void shouldReturnHandlerResultForWith() {
+        when(handler.result()).thenReturn(0);
+
+        int result = mountable.with(new Path("/foo"), handler);
+
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void shouldReturnHandlerResultForAll() {
+        when(handler.result()).thenReturn(0);
+
+        int result = mountable.all(handler);
+
+        assertEquals(0, result);
     }
 }

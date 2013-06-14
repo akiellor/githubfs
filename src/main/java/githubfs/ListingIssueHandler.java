@@ -1,20 +1,22 @@
 package githubfs;
 
 import net.fusejna.DirectoryFiller;
+import net.fusejna.ErrorCodes;
 
-public class ListingIssueHandler implements Mountable.Handler {
+public class ListingIssueHandler implements Mountable.Handler<Integer> {
     private final Path parent;
     private final DirectoryFiller filler;
-    private boolean dotDirsWritten;
+    private boolean dotDirsWritten = false;
+    private int result = -ErrorCodes.ENOENT;
 
     public ListingIssueHandler(Path parent, DirectoryFiller filler) {
         this.parent = parent;
         this.filler = filler;
-        this.dotDirsWritten = false;
     }
 
     @Override public void found(Path path, Node issue) {
         if(parent.isParentOf(path)){
+            result = 0;
             if(!dotDirsWritten){
                 filler.add(".");
                 filler.add("..");
@@ -22,5 +24,9 @@ public class ListingIssueHandler implements Mountable.Handler {
             }
             filler.add(path.basename());
         }
+    }
+
+    @Override public Integer result() {
+        return result;
     }
 }

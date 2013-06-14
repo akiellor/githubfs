@@ -14,15 +14,17 @@ public class InMemoryWriteables implements Mountable {
         writables.put(path, issue);
     }
 
-    @Override public void with(Path path, Handler handler) {
+    @Override public <T> T with(Path path, Handler<T> handler) {
         if(writables.containsKey(path)){
             handler.found(path, writables.get(path));
         }
+        return handler.result();
     }
 
-    @Override public void all(Handler handler) {
+    @Override public <T> T all(Handler<T> handler) {
         for(Map.Entry<Path, Node> entry : writables.entrySet()){
             handler.found(entry.getKey(), entry.getValue());
         }
+        return handler.result();
     }
 }

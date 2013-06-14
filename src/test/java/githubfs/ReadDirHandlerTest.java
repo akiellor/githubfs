@@ -16,20 +16,20 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DirectoryFiller.class)
-public class ListingIssueHandlerTest {
+public class ReadDirHandlerTest {
     @Mock DirectoryFiller filler;
     @Mock Node node;
 
     @Test
     public void shouldHaveENOENTWhenNothingFound() {
-        ListingIssueHandler handler = new ListingIssueHandler(Path.ROOT, filler);
+        ReadDirHandler handler = new ReadDirHandler(Path.ROOT, filler);
 
         assertThat(handler.result(), equalTo(-ErrorCodes.ENOENT));
     }
 
     @Test
     public void shouldHave0ResultWhenFoundSomething() {
-        ListingIssueHandler handler = new ListingIssueHandler(Path.ROOT, filler);
+        ReadDirHandler handler = new ReadDirHandler(Path.ROOT, filler);
 
         handler.found(new Path("/foo"), node);
 
@@ -38,7 +38,7 @@ public class ListingIssueHandlerTest {
 
     @Test
     public void shouldAddDirectoryForFoundPath() {
-        ListingIssueHandler handler = new ListingIssueHandler(Path.ROOT, filler);
+        ReadDirHandler handler = new ReadDirHandler(Path.ROOT, filler);
 
         handler.found(new Path("/foo"), node);
 
@@ -49,7 +49,7 @@ public class ListingIssueHandlerTest {
 
     @Test
     public void shouldAddDirectoryRelativeToProvidedPath() {
-        ListingIssueHandler handler = new ListingIssueHandler(new Path("/foo"), filler);
+        ReadDirHandler handler = new ReadDirHandler(new Path("/foo"), filler);
 
         handler.found(new Path("/foo/bar"), node);
 
@@ -60,7 +60,7 @@ public class ListingIssueHandlerTest {
 
     @Test
     public void shouldNotAddDotDirsForMultipleFiles() {
-        ListingIssueHandler handler = new ListingIssueHandler(new Path("/foo"), filler);
+        ReadDirHandler handler = new ReadDirHandler(new Path("/foo"), filler);
 
         handler.found(new Path("/foo/bar"), node);
         handler.found(new Path("/foo/baz"), node);
@@ -72,7 +72,7 @@ public class ListingIssueHandlerTest {
 
     @Test
     public void shouldAddDirectoryOnlyIfTheRelativeDirectoryIsTheParent() {
-        ListingIssueHandler handler = new ListingIssueHandler(new Path("/foo"), filler);
+        ReadDirHandler handler = new ReadDirHandler(new Path("/foo"), filler);
 
         handler.found(new Path("/foo/bar/baz"), node);
 

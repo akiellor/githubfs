@@ -3,13 +3,13 @@ package githubfs;
 import net.fusejna.DirectoryFiller;
 import net.fusejna.ErrorCodes;
 
-public class ListingIssueHandler implements Mountable.Handler<Integer> {
+public class ReadDirHandler implements Mountable.Handler<Integer> {
     private final Path parent;
     private final DirectoryFiller filler;
     private boolean dotDirsWritten = false;
     private int result = -ErrorCodes.ENOENT;
 
-    public ListingIssueHandler(Path parent, DirectoryFiller filler) {
+    public ReadDirHandler(Path parent, DirectoryFiller filler) {
         this.parent = parent;
         this.filler = filler;
     }

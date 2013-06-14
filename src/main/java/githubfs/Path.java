@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Path {
+    public static final Path ROOT = new Path("/");
+
     private final LinkedList<String> parts;
 
     public Path(String parts) {
@@ -38,7 +40,7 @@ public class Path {
     }
 
     public boolean isParentOf(Path path) {
-        if(path.equals(new Path("/"))){
+        if(path.equals(Path.ROOT)){
             return false;
         }
         return path.parent().equals(this);
@@ -49,6 +51,21 @@ public class Path {
             throw new IllegalStateException();
         }
         return new Path(parts.subList(0, parts.size() - 1));
+    }
+
+    public List<Path> ancestors() {
+        if(this.equals(Path.ROOT)){
+            return Arrays.asList();
+        }else{
+            ArrayList<Path> paths = new ArrayList<Path>();
+            paths.add(parent());
+            paths.addAll(parent().ancestors());
+            return paths;
+        }
+    }
+
+    public boolean isAncestorOf(Path path) {
+        return path.ancestors().contains(this);
     }
 
     @Override

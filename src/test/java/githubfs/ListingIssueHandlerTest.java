@@ -22,14 +22,14 @@ public class ListingIssueHandlerTest {
 
     @Test
     public void shouldHaveENOENTWhenNothingFound() {
-        ListingIssueHandler handler = new ListingIssueHandler(new Path("/"), filler);
+        ListingIssueHandler handler = new ListingIssueHandler(Path.ROOT, filler);
 
         assertThat(handler.result(), equalTo(-ErrorCodes.ENOENT));
     }
 
     @Test
     public void shouldHave0ResultWhenFoundSomething() {
-        ListingIssueHandler handler = new ListingIssueHandler(new Path("/"), filler);
+        ListingIssueHandler handler = new ListingIssueHandler(Path.ROOT, filler);
 
         handler.found(new Path("/foo"), writeable);
 
@@ -38,7 +38,7 @@ public class ListingIssueHandlerTest {
 
     @Test
     public void shouldAddDirectoryForFoundPath() {
-        ListingIssueHandler handler = new ListingIssueHandler(new Path("/"), filler);
+        ListingIssueHandler handler = new ListingIssueHandler(Path.ROOT, filler);
 
         handler.found(new Path("/foo"), writeable);
 

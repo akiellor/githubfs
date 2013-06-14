@@ -8,9 +8,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InMemoryWriteablesTest {
@@ -22,9 +20,9 @@ public class InMemoryWriteablesTest {
 
     @Test
     public void shouldHaveRootByDefault() {
-        mountable.with(new Path("/"), handler);
+        mountable.with(Path.ROOT, handler);
 
-        verify(handler).found(eq(new Path("/")), any(Directory.class));
+        verify(handler).found(eq(Path.ROOT), any(Directory.class));
     }
 
     @Test
@@ -70,5 +68,30 @@ public class InMemoryWriteablesTest {
         int result = mountable.all(handler);
 
         assertEquals(0, result);
+    }
+
+    @Test
+    public void shouldPutIntermediateDirectories() {
+        mountable.put(new Path("/foo/bar/baz"), foo);
+
+        mountable.all(handler);
+
+        verify(handler).found(eq(Path.ROOT), any(Directory.class));
+        verify(handler).found(eq(new Path("/foo")), any(Directory.class));
+        verify(handler).found(eq(new Path("/foo/bar")), any(Directory.class));
+        verify(handler).found(new Path("/foo/bar/baz"), foo);
+    }
+
+    @Test
+    public void shouldShouldRemoveDescendantsWhenOverwriting() {
+        mountable.put(new Path("/foo/bar"), foo);
+        mountable.put(new Path("/foo"), foo);
+
+        mountable.all(handler);
+
+        verify(handler).found(eq(Path.ROOT), any(Directory.class));
+        verify(handler).found(eq(new Path("/foo")), any(Directory.class));
+        verify(handler).result();
+        verifyNoMoreInteractions(handler);
     }
 }

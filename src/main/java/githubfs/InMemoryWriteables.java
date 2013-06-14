@@ -7,10 +7,18 @@ public class InMemoryWriteables implements Mountable {
     private Map<Path, Node> writables = new ConcurrentHashMap<Path, Node>();
 
     public InMemoryWriteables(){
-        writables.put(new Path("/"), new Directory());
+        writables.put(Path.ROOT, new Directory());
     }
 
     @Override public void put(Path path, Node issue) {
+        for(Path ancestor : path.ancestors()){
+            writables.put(ancestor, new Directory());
+        }
+        for(Path registered : writables.keySet()){
+            if(path.isAncestorOf(registered)){
+                writables.remove(registered);
+            }
+        }
         writables.put(path, issue);
     }
 

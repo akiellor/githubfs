@@ -17,13 +17,27 @@ public class Main {
             GHRepository repository = github.getRepository(args[2]);
             List<GHIssue> fetchedIssues = repository.getIssues(GHIssueState.OPEN);
             for(GHIssue issue : fetchedIssues){
-                issues.put(new Path("/" + String.valueOf(issue.getNumber())), new Issue(issue.getBody()));
+                issues.put(new Path("/issues/" + String.valueOf(issue.getNumber())), new Issue(issue.getBody()));
             }
+
+            issues.put(new Path("/foo/bar"), new Node() {
+                @Override public void describe(githubfs.File file) {
+                    file.content("bar");
+                    file.file();
+                }
+            });
+
+            issues.put(new Path("/foo/baz"), new Node() {
+                @Override public void describe(githubfs.File file) {
+                    file.content("#!/bin/sh -e\n\necho foo");
+                    file.executable();
+                }
+            });
 
             FileSystem fileSystem = new FileSystem(issues);
             fileSystem.mount(new File(args[3]));
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 }

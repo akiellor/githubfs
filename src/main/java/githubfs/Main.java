@@ -11,7 +11,7 @@ import java.util.List;
 public class Main {
     public static void main(String... args) {
         try {
-            final InMemoryWriteables issues = new InMemoryWriteables();
+            final InMemoryMountable issues = new InMemoryMountable();
 
             GitHub github = GitHub.connect(args[0], args[1]);
             GHRepository repository = github.getRepository(args[2]);

@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 @PrepareForTest(DirectoryFiller.class)
 public class ListingIssueHandlerTest {
     @Mock DirectoryFiller filler;
-    @Mock Node writeable;
+    @Mock Node node;
 
     @Test
     public void shouldHaveENOENTWhenNothingFound() {
@@ -31,7 +31,7 @@ public class ListingIssueHandlerTest {
     public void shouldHave0ResultWhenFoundSomething() {
         ListingIssueHandler handler = new ListingIssueHandler(Path.ROOT, filler);
 
-        handler.found(new Path("/foo"), writeable);
+        handler.found(new Path("/foo"), node);
 
         assertThat(handler.result(), equalTo(0));
     }
@@ -40,7 +40,7 @@ public class ListingIssueHandlerTest {
     public void shouldAddDirectoryForFoundPath() {
         ListingIssueHandler handler = new ListingIssueHandler(Path.ROOT, filler);
 
-        handler.found(new Path("/foo"), writeable);
+        handler.found(new Path("/foo"), node);
 
         verify(filler).add(".");
         verify(filler).add("..");
@@ -51,7 +51,7 @@ public class ListingIssueHandlerTest {
     public void shouldAddDirectoryRelativeToProvidedPath() {
         ListingIssueHandler handler = new ListingIssueHandler(new Path("/foo"), filler);
 
-        handler.found(new Path("/foo/bar"), writeable);
+        handler.found(new Path("/foo/bar"), node);
 
         verify(filler).add(".");
         verify(filler).add("..");
@@ -62,8 +62,8 @@ public class ListingIssueHandlerTest {
     public void shouldNotAddDotDirsForMultipleFiles() {
         ListingIssueHandler handler = new ListingIssueHandler(new Path("/foo"), filler);
 
-        handler.found(new Path("/foo/bar"), writeable);
-        handler.found(new Path("/foo/baz"), writeable);
+        handler.found(new Path("/foo/bar"), node);
+        handler.found(new Path("/foo/baz"), node);
 
         verify(filler).add(".");
         verify(filler).add("..");
@@ -74,7 +74,7 @@ public class ListingIssueHandlerTest {
     public void shouldAddDirectoryOnlyIfTheRelativeDirectoryIsTheParent() {
         ListingIssueHandler handler = new ListingIssueHandler(new Path("/foo"), filler);
 
-        handler.found(new Path("/foo/bar/baz"), writeable);
+        handler.found(new Path("/foo/bar/baz"), node);
 
         verify(filler, never()).add(anyString());
     }

@@ -8,7 +8,7 @@ public interface Mountable {
     <T> T all(Handler<T> handler);
 
     public interface Handler<T> {
-        void found(Path path, Node writeable);
+        void found(Path path, Node node);
         T result();
     }
 }

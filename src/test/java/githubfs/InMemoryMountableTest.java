@@ -11,10 +11,10 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InMemoryWriteablesTest {
+public class InMemoryMountableTest {
     @Mock Mountable.Handler<Integer> handler;
 
-    Mountable mountable = new InMemoryWriteables();
+    Mountable mountable = new InMemoryMountable();
     Issue foo = new Issue("/foo");
     Issue bar = new Issue("/bar");
 

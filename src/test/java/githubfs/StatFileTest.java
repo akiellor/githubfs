@@ -35,4 +35,11 @@ public class StatFileTest {
 
         verify(stat).setMode(TypeMode.NodeType.DIRECTORY, true, false, true);
     }
+
+    @Test
+    public void shouldMarkAsExecutable() {
+        new StatFile(stat).executable();
+
+        verify(stat).setMode(TypeMode.NodeType.FILE, true, false, true);
+    }
 }

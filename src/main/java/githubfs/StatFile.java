@@ -21,4 +21,8 @@ public class StatFile implements File{
     @Override public void directory() {
         stat.setMode(TypeMode.NodeType.DIRECTORY, true, false, true);
     }
+
+    @Override public void executable() {
+        stat.setMode(TypeMode.NodeType.FILE, true, false, true);
+    }
 }

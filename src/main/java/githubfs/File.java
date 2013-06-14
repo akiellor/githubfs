@@ -6,4 +6,6 @@ public interface File {
     void file();
 
     void directory();
+
+    void executable();
 }

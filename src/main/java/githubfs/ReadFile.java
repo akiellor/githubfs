@@ -30,4 +30,7 @@ public class ReadFile implements File {
 
     @Override public void directory() {
     }
+
+    @Override public void executable() {
+    }
 }

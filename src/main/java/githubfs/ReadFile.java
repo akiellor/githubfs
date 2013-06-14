@@ -27,4 +27,7 @@ public class ReadFile implements File {
 
     @Override public void readable() {
     }
+
+    @Override public void directory() {
+    }
 }

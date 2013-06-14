@@ -17,4 +17,8 @@ public class StatFile implements File{
     @Override public void readable() {
         stat.setMode(TypeMode.NodeType.FILE, true, false, false);
     }
+
+    @Override public void directory() {
+        stat.setMode(TypeMode.NodeType.DIRECTORY, true, false, false);
+    }
 }

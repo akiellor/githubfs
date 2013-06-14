@@ -3,7 +3,6 @@ package githubfs;
 import net.fusejna.DirectoryFiller;
 import net.fusejna.StructFuseFileInfo;
 import net.fusejna.StructStat;
-import net.fusejna.types.TypeMode;
 import net.fusejna.util.FuseFilesystemAdapterFull;
 
 import java.nio.ByteBuffer;
@@ -17,16 +16,11 @@ public class FileSystem extends FuseFilesystemAdapterFull {
 
     @Override
     public int getattr(String path, final StructStat.StatWrapper stat) {
-        if ("/".equals(path)) {
-            stat.nlink(1);
-            stat.setMode(TypeMode.NodeType.DIRECTORY, true, false, true);
-        } else {
-            mountable.with(new Path(path), new Mountable.Handler() {
-                 @Override public void found(Path path, Node issue) {
-                    issue.describe(new StatFile(stat));
-                }
-            });
-        }
+        mountable.with(new Path(path), new Mountable.Handler() {
+             @Override public void found(Path path, Node issue) {
+                issue.describe(new StatFile(stat));
+            }
+        });
         return 0;
     }
 

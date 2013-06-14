@@ -28,4 +28,11 @@ public class StatFileTest {
 
         verify(stat).size(3);
     }
+
+    @Test
+    public void shouldMarkAsDirectory() {
+        new StatFile(stat).directory();
+
+        verify(stat).setMode(TypeMode.NodeType.DIRECTORY, true, false, false);
+    }
 }

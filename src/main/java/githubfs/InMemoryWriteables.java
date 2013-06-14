@@ -6,6 +6,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InMemoryWriteables implements Mountable {
     private Map<Path, Node> writables = new ConcurrentHashMap<Path, Node>();
 
+    public InMemoryWriteables(){
+        writables.put(new Path("/"), new Directory());
+    }
+
     @Override public void put(Path path, Node issue) {
         writables.put(path, issue);
     }

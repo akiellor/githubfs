@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -16,6 +17,13 @@ public class InMemoryWriteablesTest {
     Mountable mountable = new InMemoryWriteables();
     Issue foo = new Issue("/foo");
     Issue bar = new Issue("/bar");
+
+    @Test
+    public void shouldHaveRootByDefault() {
+        mountable.with(new Path("/"), handler);
+
+        verify(handler).found(eq(new Path("/")), any(Directory.class));
+    }
 
     @Test
     public void shouldPutAndGetByPath() {

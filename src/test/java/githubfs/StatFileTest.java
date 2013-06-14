@@ -16,8 +16,8 @@ public class StatFileTest {
     @Mock StructStat.StatWrapper stat;
 
     @Test
-    public void shouldMarkAsReadable() {
-        new StatFile(stat).readable();
+    public void shouldMarkAsFile() {
+        new StatFile(stat).file();
 
         verify(stat).setMode(TypeMode.NodeType.FILE, true, false, false);
     }

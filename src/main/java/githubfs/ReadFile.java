@@ -25,7 +25,7 @@ public class ReadFile implements File {
         return bytesWritten;
     }
 
-    @Override public void readable() {
+    @Override public void file() {
     }
 
     @Override public void directory() {

@@ -16,6 +16,6 @@ public class IssueTest {
         new Issue("foo").describe(file);
 
         verify(file).content("foo");
-        verify(file).readable();
+        verify(file).file();
     }
 }

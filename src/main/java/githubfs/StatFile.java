@@ -14,7 +14,7 @@ public class StatFile implements File{
         stat.size(content.length());
     }
 
-    @Override public void readable() {
+    @Override public void file() {
         stat.setMode(TypeMode.NodeType.FILE, true, false, false);
     }
 

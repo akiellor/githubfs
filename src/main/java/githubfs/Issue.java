@@ -13,6 +13,6 @@ public class Issue implements Node {
 
     public void describe(File file) {
         file.content(body);
-        file.readable();
+        file.file();
     }
 }

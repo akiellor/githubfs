@@ -14,32 +14,32 @@ public class InMemoryWriteablesTest {
     @Mock Mountable.Handler handler;
 
     Mountable mountable = new InMemoryWriteables();
-    Issue foo = new Issue("foo");
-    Issue bar = new Issue("bar");
+    Issue foo = new Issue("/foo");
+    Issue bar = new Issue("/bar");
 
     @Test
     public void shouldPutAndGetByPath() {
-        mountable.put(new Path("foo"), foo);
+        mountable.put(new Path("/foo"), foo);
 
-        mountable.with(new Path("foo"), handler);
+        mountable.with(new Path("/foo"), handler);
 
-        verify(handler).found(new Path("foo"), foo);
+        verify(handler).found(new Path("/foo"), foo);
     }
 
     @Test
     public void shouldGetAllElements() {
-        mountable.put(new Path("foo"), foo);
-        mountable.put(new Path("bar"), bar);
+        mountable.put(new Path("/foo"), foo);
+        mountable.put(new Path("/bar"), bar);
 
         mountable.all(handler);
 
-        verify(handler).found(new Path("foo"), foo);
-        verify(handler).found(new Path("bar"), bar);
+        verify(handler).found(new Path("/foo"), foo);
+        verify(handler).found(new Path("/bar"), bar);
     }
 
     @Test
     public void shouldNotFindElement() {
-        mountable.with(new Path("foo"), handler);
+        mountable.with(new Path("/foo"), handler);
 
         verify(handler, never()).found(any(Path.class), any(Issue.class));
     }

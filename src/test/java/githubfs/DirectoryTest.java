@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(PowerMockRunner.class)
 public class DirectoryTest {
-    @Mock File file;
+    @Mock Node.Output file;
 
     @Test
     public void shouldBeReadableAndWritableDirectory() {

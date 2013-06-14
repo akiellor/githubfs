@@ -12,33 +12,33 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(StructStat.StatWrapper.class)
-public class StatFileTest {
+public class StatOutputTest {
     @Mock StructStat.StatWrapper stat;
 
     @Test
     public void shouldMarkAsFile() {
-        new StatFile(stat).file();
+        new StatOutput(stat).file();
 
         verify(stat).setMode(TypeMode.NodeType.FILE, true, false, false);
     }
 
     @Test
     public void shouldWriteContentSize() {
-        new StatFile(stat).content("foo");
+        new StatOutput(stat).content("foo");
 
         verify(stat).size(3);
     }
 
     @Test
     public void shouldMarkAsDirectory() {
-        new StatFile(stat).directory();
+        new StatOutput(stat).directory();
 
         verify(stat).setMode(TypeMode.NodeType.DIRECTORY, true, false, true);
     }
 
     @Test
     public void shouldMarkAsExecutable() {
-        new StatFile(stat).executable();
+        new StatOutput(stat).executable();
 
         verify(stat).setMode(TypeMode.NodeType.FILE, true, false, true);
     }

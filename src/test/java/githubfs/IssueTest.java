@@ -9,7 +9,7 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IssueTest {
-    @Mock File file;
+    @Mock Node.Output file;
 
     @Test
     public void shouldWriteToFile() {

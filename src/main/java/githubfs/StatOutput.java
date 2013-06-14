@@ -3,10 +3,10 @@ package githubfs;
 import net.fusejna.StructStat;
 import net.fusejna.types.TypeMode;
 
-public class StatFile implements File{
+public class StatOutput implements Node.Output {
     private final StructStat.StatWrapper stat;
 
-    public StatFile(StructStat.StatWrapper stat){
+    public StatOutput(StructStat.StatWrapper stat){
         this.stat = stat;
     }
 

@@ -21,16 +21,16 @@ public class Main {
             }
 
             issues.put(new Path("/foo/bar"), new Node() {
-                @Override public void describe(githubfs.File file) {
-                    file.content("bar");
-                    file.file();
+                @Override public void describe(Output output) {
+                    output.content("bar");
+                    output.file();
                 }
             });
 
             issues.put(new Path("/foo/baz"), new Node() {
-                @Override public void describe(githubfs.File file) {
-                    file.content("#!/bin/sh -e\n\necho foo");
-                    file.executable();
+                @Override public void describe(Output output) {
+                    output.content("#!/bin/sh -e\n\necho foo");
+                    output.executable();
                 }
             });
 

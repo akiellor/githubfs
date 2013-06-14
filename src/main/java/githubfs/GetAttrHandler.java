@@ -14,7 +14,7 @@ class GetAttrHandler implements Mountable.Handler<Integer> {
 
     @Override public void found(Path path, Node issue) {
         result = 0;
-        issue.describe(new StatFile(stat));
+        issue.describe(new StatOutput(stat));
     }
 
     @Override public Integer result() {

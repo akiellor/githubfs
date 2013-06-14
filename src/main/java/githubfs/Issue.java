@@ -7,8 +7,8 @@ public class Issue implements Node {
         this.body = body;
     }
 
-    public void describe(File file) {
-        file.content(body);
-        file.file();
+    public void describe(Output output) {
+        output.content(body);
+        output.file();
     }
 }

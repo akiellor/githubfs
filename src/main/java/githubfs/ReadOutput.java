@@ -4,12 +4,12 @@ import net.fusejna.StructFuseFileInfo;
 
 import java.nio.ByteBuffer;
 
-public class ReadFile implements File {
+public class ReadOutput implements Node.Output {
     private final ByteBuffer buffer;
     private final StructFuseFileInfo.FileInfoWrapper info;
     private int bytesWritten;
 
-    public ReadFile(ByteBuffer buffer, StructFuseFileInfo.FileInfoWrapper info) {
+    public ReadOutput(ByteBuffer buffer, StructFuseFileInfo.FileInfoWrapper info) {
         this.buffer = buffer;
         this.info = info;
     }

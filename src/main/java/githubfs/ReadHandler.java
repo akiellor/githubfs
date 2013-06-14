@@ -15,7 +15,7 @@ public class ReadHandler implements Mountable.Handler<Integer>{
     }
 
     @Override public void found(Path path, Node node) {
-        ReadFile file = new ReadFile(buffer, info);
+        ReadOutput file = new ReadOutput(buffer, info);
         node.describe(file);
         this.bytesWritten = file.getBytesWritten();
     }

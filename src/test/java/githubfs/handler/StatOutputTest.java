@@ -1,5 +1,6 @@
-package githubfs;
+package githubfs.handler;
 
+import githubfs.handler.GetAttrHandler;
 import net.fusejna.StructStat;
 import net.fusejna.types.TypeMode;
 import org.junit.Test;
@@ -17,28 +18,28 @@ public class StatOutputTest {
 
     @Test
     public void shouldMarkAsFile() {
-        new StatOutput(stat).file();
+        new GetAttrHandler.StatOutput(stat).file();
 
         verify(stat).setMode(TypeMode.NodeType.FILE, true, false, false);
     }
 
     @Test
     public void shouldWriteContentSize() {
-        new StatOutput(stat).content("foo");
+        new GetAttrHandler.StatOutput(stat).content("foo");
 
         verify(stat).size(3);
     }
 
     @Test
     public void shouldMarkAsDirectory() {
-        new StatOutput(stat).directory();
+        new GetAttrHandler.StatOutput(stat).directory();
 
         verify(stat).setMode(TypeMode.NodeType.DIRECTORY, true, false, true);
     }
 
     @Test
     public void shouldMarkAsExecutable() {
-        new StatOutput(stat).executable();
+        new GetAttrHandler.StatOutput(stat).executable();
 
         verify(stat).setMode(TypeMode.NodeType.FILE, true, false, true);
     }

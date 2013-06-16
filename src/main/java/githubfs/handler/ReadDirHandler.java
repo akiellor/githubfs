@@ -1,5 +1,8 @@
-package githubfs;
+package githubfs.handler;
 
+import githubfs.Mountable;
+import githubfs.Node;
+import githubfs.Path;
 import net.fusejna.DirectoryFiller;
 import net.fusejna.ErrorCodes;
 

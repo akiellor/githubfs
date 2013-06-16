@@ -1,9 +1,13 @@
-package githubfs;
+package githubfs.handler;
 
+import githubfs.Mountable;
+import githubfs.Node;
+import githubfs.Path;
+import githubfs.StatOutput;
 import net.fusejna.ErrorCodes;
 import net.fusejna.StructStat;
 
-class GetAttrHandler implements Mountable.Handler<Integer> {
+public class GetAttrHandler implements Mountable.Handler<Integer> {
     private final StructStat.StatWrapper stat;
     private int result;
 

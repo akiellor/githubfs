@@ -1,10 +1,14 @@
-package githubfs;
+package githubfs.handler;
 
+import githubfs.Mountable;
+import githubfs.Node;
+import githubfs.Path;
+import githubfs.ReadOutput;
 import net.fusejna.StructFuseFileInfo;
 
 import java.nio.ByteBuffer;
 
-public class ReadHandler implements Mountable.Handler<Integer>{
+public class ReadHandler implements Mountable.Handler<Integer> {
     private final ByteBuffer buffer;
     private final StructFuseFileInfo.FileInfoWrapper info;
     private int bytesWritten = 0;

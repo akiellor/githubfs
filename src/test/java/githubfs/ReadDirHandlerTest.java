@@ -1,5 +1,6 @@
 package githubfs;
 
+import githubfs.handler.ReadDirHandler;
 import net.fusejna.DirectoryFiller;
 import net.fusejna.ErrorCodes;
 import org.junit.Test;

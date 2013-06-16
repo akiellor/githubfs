@@ -1,5 +1,8 @@
 package githubfs;
 
+import githubfs.handler.GetAttrHandler;
+import githubfs.handler.ReadDirHandler;
+import githubfs.handler.ReadHandler;
 import net.fusejna.DirectoryFiller;
 import net.fusejna.StructFuseFileInfo;
 import net.fusejna.StructStat;

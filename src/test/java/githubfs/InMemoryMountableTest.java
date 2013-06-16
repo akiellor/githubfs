@@ -13,10 +13,10 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class InMemoryMountableTest {
     @Mock Mountable.Handler<Integer> handler;
+    @Mock Issue foo;
+    @Mock Issue bar;
 
     Mountable mountable = new InMemoryMountable();
-    Issue foo = new Issue("/foo");
-    Issue bar = new Issue("/bar");
 
     @Test
     public void shouldHaveRootByDefault() {

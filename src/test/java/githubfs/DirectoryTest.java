@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -17,7 +17,7 @@ public class DirectoryTest {
     public void shouldBeReadableAndWritableDirectory() {
         new Directory().describe(file);
 
-        verify(file, never()).content(anyString());
+        verify(file, never()).content(any(Content.class));
         verify(file).directory();
     }
 }

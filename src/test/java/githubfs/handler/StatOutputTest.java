@@ -1,6 +1,6 @@
 package githubfs.handler;
 
-import githubfs.handler.GetAttrHandler;
+import githubfs.Content;
 import net.fusejna.StructStat;
 import net.fusejna.types.TypeMode;
 import org.junit.Test;
@@ -10,11 +10,13 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(StructStat.StatWrapper.class)
 public class StatOutputTest {
     @Mock StructStat.StatWrapper stat;
+    @Mock Content content;
 
     @Test
     public void shouldMarkAsFile() {
@@ -25,7 +27,9 @@ public class StatOutputTest {
 
     @Test
     public void shouldWriteContentSize() {
-        new GetAttrHandler.StatOutput(stat).content("foo");
+        when(content.length()).thenReturn(3l);
+
+        new GetAttrHandler.StatOutput(stat).content(content);
 
         verify(stat).size(3);
     }

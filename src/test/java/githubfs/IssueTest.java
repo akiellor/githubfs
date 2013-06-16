@@ -10,12 +10,13 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class IssueTest {
     @Mock Node.Output file;
+    @Mock Content content;
 
     @Test
     public void shouldWriteToFile() {
-        new Issue("foo").describe(file);
+        new Issue(content).describe(file);
 
-        verify(file).content("foo");
+        verify(file).content(content);
         verify(file).file();
     }
 }

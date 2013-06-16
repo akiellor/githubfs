@@ -1,5 +1,6 @@
 package githubfs.handler;
 
+import githubfs.Content;
 import githubfs.Mountable;
 import githubfs.Node;
 import githubfs.Path;
@@ -32,7 +33,7 @@ public class GetAttrHandler implements Mountable.Handler<Integer> {
             this.stat = stat;
         }
 
-        @Override public void content(String content) {
+        @Override public void content(Content content) {
             stat.size(content.length());
         }
 

@@ -17,19 +17,19 @@ public class Main {
             GHRepository repository = github.getRepository(args[2]);
             List<GHIssue> fetchedIssues = repository.getIssues(GHIssueState.OPEN);
             for(GHIssue issue : fetchedIssues){
-                issues.put(new Path("/issues/" + String.valueOf(issue.getNumber())), new Issue(issue.getBody()));
+                issues.put(new Path("/issues/" + String.valueOf(issue.getNumber())), new Issue(Content.from(issue.getBody())));
             }
 
             issues.put(new Path("/foo/bar"), new Node() {
                 @Override public void describe(Output output) {
-                    output.content("bar");
+                    output.content(Content.from("bar"));
                     output.file();
                 }
             });
 
             issues.put(new Path("/foo/baz"), new Node() {
                 @Override public void describe(Output output) {
-                    output.content("#!/bin/sh -e\n\necho foo");
+                    output.content(Content.from("#!/bin/sh -e\n\necho foo"));
                     output.executable();
                 }
             });

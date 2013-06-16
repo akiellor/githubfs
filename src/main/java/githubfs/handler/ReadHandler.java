@@ -1,5 +1,6 @@
 package githubfs.handler;
 
+import githubfs.Content;
 import githubfs.Mountable;
 import githubfs.Node;
 import githubfs.Path;
@@ -37,11 +38,9 @@ public class ReadHandler implements Mountable.Handler<Integer> {
             this.info = info;
         }
 
-        @Override public void content(String content) {
-            byte[] bytes = content.getBytes();
-            buffer.put(bytes);
+        @Override public void content(Content content) {
+            bytesWritten = content.write(buffer);
             info.flush();
-            bytesWritten = bytes.length;
         }
 
         public int getBytesWritten() {

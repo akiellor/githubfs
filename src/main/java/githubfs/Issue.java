@@ -1,9 +1,9 @@
 package githubfs;
 
 public class Issue implements Node {
-    private final String body;
+    private final Content body;
 
-    public Issue(String body) {
+    public Issue(Content body) {
         this.body = body;
     }
 

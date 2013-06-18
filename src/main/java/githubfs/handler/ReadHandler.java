@@ -10,41 +10,49 @@ import java.nio.ByteBuffer;
 
 public class ReadHandler implements Mountable.Handler<Integer> {
     private final ByteBuffer buffer;
+    private final int size;
+    private final int offset;
     private final StructFuseFileInfo.FileInfoWrapper info;
-    private int bytesWritten = 0;
+    private int bytesRead = 0;
 
-    public ReadHandler(ByteBuffer buffer, StructFuseFileInfo.FileInfoWrapper info){
+    public ReadHandler(ByteBuffer buffer, int size, int offset, StructFuseFileInfo.FileInfoWrapper info){
         this.buffer = buffer;
+        this.size = size;
+        this.offset = offset;
         this.info = info;
     }
 
     @Override public void found(Path path, Node node) {
-        ReadOutput file = new ReadOutput(buffer, info);
+        ReadOutput file = new ReadOutput(buffer, size, offset, info);
         node.describe(file);
-        this.bytesWritten = file.getBytesWritten();
+        this.bytesRead = file.getBytesRead();
     }
 
     @Override public Integer result() {
-        return bytesWritten;
+        return bytesRead;
     }
 
     private static class ReadOutput implements Node.Output {
         private final ByteBuffer buffer;
+        private final int size;
+        private final int offset;
         private final StructFuseFileInfo.FileInfoWrapper info;
-        private int bytesWritten;
+        private int bytesRead;
 
-        public ReadOutput(ByteBuffer buffer, StructFuseFileInfo.FileInfoWrapper info) {
+        public ReadOutput(ByteBuffer buffer, int size, int offset, StructFuseFileInfo.FileInfoWrapper info) {
             this.buffer = buffer;
+            this.size = size;
+            this.offset = offset;
             this.info = info;
         }
 
         @Override public void content(Content content) {
-            bytesWritten = content.write(buffer);
+            bytesRead = content.read(buffer, size, offset);
             info.flush();
         }
 
-        public int getBytesWritten() {
-            return bytesWritten;
+        public int getBytesRead() {
+            return bytesRead;
         }
 
         @Override public void file() {

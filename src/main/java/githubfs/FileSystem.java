@@ -24,7 +24,7 @@ public class FileSystem extends FuseFilesystemAdapterFull {
 
     @Override
     public int read(String path, final ByteBuffer buffer, long size, long offset, final StructFuseFileInfo.FileInfoWrapper info) {
-        return mountable.with(new Path(path), new ReadHandler(buffer, info));
+        return mountable.with(new Path(path), new ReadHandler(buffer, (int)size, (int)offset, info));
     }
 
     @Override

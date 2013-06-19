@@ -1,9 +1,6 @@
 package githubfs;
 
-import githubfs.handler.GetAttrHandler;
-import githubfs.handler.ReadDirHandler;
-import githubfs.handler.ReadHandler;
-import githubfs.handler.WriteHandler;
+import githubfs.handler.*;
 import net.fusejna.DirectoryFiller;
 import net.fusejna.StructFuseFileInfo;
 import net.fusejna.StructStat;
@@ -32,5 +29,9 @@ public class FileSystem extends FuseFilesystemAdapterFull {
 
     @Override public int write(String path, ByteBuffer buf, long bufSize, long writeOffset, StructFuseFileInfo.FileInfoWrapper info) {
         return mountable.with(new Path(path), new WriteHandler(buf, bufSize, writeOffset, info));
+    }
+
+    @Override public int truncate(String path, long offset) {
+        return mountable.with(new Path(path), new TruncateHandler(offset));
     }
 }

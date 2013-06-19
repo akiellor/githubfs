@@ -39,4 +39,21 @@ public class Content {
         }
         return new String(result);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Content content1 = (Content) o;
+
+        if (content != null ? !content.equals(content1.content) : content1.content != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return content != null ? content.hashCode() : 0;
+    }
 }

@@ -5,6 +5,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -30,5 +32,10 @@ public class IssueTest {
 
         verify(input).content(content);
         verifyNoMoreInteractions(input);
+    }
+
+    @Test
+    public void shouldBeEqualByValue() {
+        assertThat(new Issue(content), equalTo(new Issue(content)));
     }
 }

@@ -15,4 +15,21 @@ public class Issue implements Node {
     @Override public void update(Input input) {
         input.content(body);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Issue issue = (Issue) o;
+
+        if (body != null ? !body.equals(issue.body) : issue.body != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return body != null ? body.hashCode() : 0;
+    }
 }

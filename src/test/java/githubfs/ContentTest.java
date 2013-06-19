@@ -92,4 +92,9 @@ public class ContentTest {
         assertThat(bytesWritten, equalTo(3));
         assertThat(content.getContent(), equalTo("bar"));
     }
+
+    @Test
+    public void shouldBeEqualWhenContentEqual() {
+        assertThat(Content.from("Foo"), equalTo(Content.from("Foo")));
+    }
 }

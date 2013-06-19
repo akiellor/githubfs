@@ -24,12 +24,17 @@ import static org.mockito.Mockito.when;
 public class GitHubIssuesMountableTest {
     @Mock GHRepository repository;
     @Mock Mountable.ListHandler<Integer> listHandler;
-    @Mock GHIssue issue;
+    @Mock Mountable.Handler<Integer> handler;
+    @Mock GHIssue ghIssue;
+    @Mock Node node;
+
+    Issue issue;
 
     @Before
     public void setup(){
-        when(issue.getNumber()).thenReturn(1);
-        when(issue.getBody()).thenReturn("Foo");
+        when(ghIssue.getNumber()).thenReturn(1);
+        when(ghIssue.getBody()).thenReturn("Foo");
+        issue = new Issue(Content.from("Foo"));
     }
 
     @Test
@@ -50,7 +55,7 @@ public class GitHubIssuesMountableTest {
     @Test
     public void shouldListIssuesWhenIssuesArePresent() throws IOException {
         when(repository.getIssues(GHIssueState.OPEN))
-                .thenReturn(ImmutableList.of(issue));
+                .thenReturn(ImmutableList.of(ghIssue));
         when(listHandler.found(anyMapOf(Path.class, Node.class)))
                 .thenReturn(0);
 
@@ -59,7 +64,7 @@ public class GitHubIssuesMountableTest {
         Integer result = mountable.list(Path.ROOT, listHandler);
 
         assertThat(result, equalTo(0));
-        verify(listHandler).found(ImmutableMap.<Path, Node>of(new Path("/1"), new Issue(Content.from("Foo"))));
+        verify(listHandler).found(ImmutableMap.<Path, Node>of(new Path("/1"), issue));
     }
 
     @Test
@@ -70,5 +75,49 @@ public class GitHubIssuesMountableTest {
         mountable.list(Path.ROOT, listHandler);
 
         verify(listHandler).notFound(Path.ROOT);
+    }
+
+    @Test
+    public void shouldFindIssueById() throws IOException {
+        when(repository.getIssue(1)).thenReturn(ghIssue);
+        GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
+
+        mountable.with(new Path("/1"), handler);
+
+        verify(handler).found(new Path("/1"), issue);
+    }
+
+    @Test
+    public void shouldNotFindIssueById() throws IOException {
+        when(repository.getIssue(1)).thenReturn(null);
+        GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
+
+        mountable.with(new Path("/1"), handler);
+
+        verify(handler).notFound(new Path("/1"));
+    }
+
+    @Test
+    public void shouldNotFindIssueByIdWhenPathIsJunk() throws IOException {
+        GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
+
+        mountable.with(new Path("/foobar"), handler);
+
+        verify(handler).notFound(new Path("/foobar"));
+    }
+
+    @Test
+    public void shouldNotFindIssueByIdWhenRepositoryThrows() throws IOException {
+        when(repository.getIssue(1)).thenThrow(new RuntimeException());
+        GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
+
+        mountable.with(new Path("/1"), handler);
+
+        verify(handler).notFound(new Path("/1"));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void shouldNotSupportPut() {
+        new GitHubIssuesMountable(repository).put(Path.ROOT, node);
     }
 }

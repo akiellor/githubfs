@@ -19,7 +19,19 @@ public class GitHubIssuesMountable implements Mountable{
     }
 
     @Override public <T> T with(Path path, Handler<T> handler) {
-        throw new UnsupportedOperationException();
+        GHIssue ghIssue;
+        try {
+            int ghIssueId = Integer.parseInt(path.basename());
+            ghIssue = repository.getIssue(ghIssueId);
+        } catch (Exception e) {
+            return handler.notFound(path);
+        }
+
+        if(ghIssue == null){
+            return handler.notFound(path);
+        }else{
+            return handler.found(path, toIssue(ghIssue));
+        }
     }
 
     @Override public <T> T list(Path path, ListHandler<T> listHandler) {
@@ -32,9 +44,13 @@ public class GitHubIssuesMountable implements Mountable{
 
         ImmutableMap.Builder<Path, Node> builder = ImmutableMap.builder();
         for(GHIssue issue : issues){
-            builder.put(new Path("/" + issue.getNumber()), new Issue(Content.from(issue.getBody())));
+            builder.put(new Path("/" + issue.getNumber()), toIssue(issue));
         }
 
         return listHandler.found(builder.build());
+    }
+
+    private Issue toIssue(GHIssue issue) {
+        return new Issue(Content.from(issue.getBody()));
     }
 }

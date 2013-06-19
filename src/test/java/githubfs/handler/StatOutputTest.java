@@ -22,7 +22,7 @@ public class StatOutputTest {
     public void shouldMarkAsFile() {
         new GetAttrHandler.StatOutput(stat).file();
 
-        verify(stat).setMode(TypeMode.NodeType.FILE, true, false, false);
+        verify(stat).setMode(TypeMode.NodeType.FILE, true, true, false);
     }
 
     @Test

@@ -25,12 +25,18 @@ public class Main {
                     output.content(Content.from("bar"));
                     output.file();
                 }
+
+                @Override public void update(Input input) {
+                }
             });
 
             issues.put(new Path("/foo/baz"), new Node() {
                 @Override public void describe(Output output) {
                     output.content(Content.from("#!/bin/sh -e\n\necho foo"));
                     output.executable();
+                }
+
+                @Override public void update(Input input) {
                 }
             });
 

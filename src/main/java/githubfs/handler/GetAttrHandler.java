@@ -38,7 +38,7 @@ public class GetAttrHandler implements Mountable.Handler<Integer> {
         }
 
         @Override public void file() {
-            stat.setMode(TypeMode.NodeType.FILE, true, false, false);
+            stat.setMode(TypeMode.NodeType.FILE, true, true, false);
         }
 
         @Override public void directory() {

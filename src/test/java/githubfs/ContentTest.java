@@ -53,4 +53,43 @@ public class ContentTest {
         assertThat(bytesRead, equalTo(2));
         assertThat(out.array(), equalTo(new byte[]{'o', 'o'}));
     }
+
+    @Test
+    public void shouldWriteBufferToContent() {
+        ByteBuffer in = ByteBuffer.allocate(3);
+        in.put(new byte[]{'f', 'o', 'o'});
+        in.flip();
+        Content content = Content.from("");
+
+        int bytesWritten = content.write(in, 3, 0);
+
+        assertThat(bytesWritten, equalTo(3));
+        assertThat(content.getContent(), equalTo("foo"));
+    }
+
+    @Test
+    public void shouldWriteBufferToContentWithOffset() {
+        ByteBuffer in = ByteBuffer.allocate(3);
+        in.put(new byte[]{'o', 'o'});
+        in.flip();
+        Content content = Content.from("f");
+
+        int bytesWritten = content.write(in, 2, 1);
+
+        assertThat(bytesWritten, equalTo(2));
+        assertThat(content.getContent(), equalTo("foo"));
+    }
+
+    @Test
+    public void shouldTruncateExistingContent() {
+        ByteBuffer in = ByteBuffer.allocate(3);
+        in.put(new byte[]{'b', 'a', 'r'});
+        in.flip();
+        Content content = Content.from("foobar");
+
+        int bytesWritten = content.write(in, 3, 0);
+
+        assertThat(bytesWritten, equalTo(3));
+        assertThat(content.getContent(), equalTo("bar"));
+    }
 }

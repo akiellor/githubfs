@@ -11,4 +11,8 @@ public class Issue implements Node {
         output.content(body);
         output.file();
     }
+
+    @Override public void update(Input input) {
+        input.content(body);
+    }
 }

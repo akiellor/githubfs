@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(StructStat.StatWrapper.class)
-public class StatOutputTest {
+public class GetAttrHandlerTest {
     @Mock StructStat.StatWrapper stat;
     @Mock Content content;
 

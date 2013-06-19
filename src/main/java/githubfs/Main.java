@@ -20,6 +20,7 @@ public class Main {
                 issues.put(new Path("/issues/" + String.valueOf(issue.getNumber())), new Issue(Content.from(issue.getBody())));
             }
 
+
             issues.put(new Path("/foo/bar"), new Node() {
                 @Override public void describe(Output output) {
                     output.content(Content.from("bar"));
@@ -40,7 +41,7 @@ public class Main {
                 }
             });
 
-            FileSystem fileSystem = new FileSystem(issues);
+            FileSystem fileSystem = new FileSystem(issues, repository);
             fileSystem.mount(new File(args[3]));
         } catch (Exception e) {
             throw new RuntimeException(e);

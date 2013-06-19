@@ -1,11 +1,17 @@
 package githubfs;
 
+import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -13,8 +19,10 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class InMemoryMountableTest {
     @Mock Mountable.Handler<Integer> handler;
+    @Mock Mountable.ListHandler<Integer> listHandler;
     @Mock Issue foo;
     @Mock Issue bar;
+    @Mock Issue qux;
 
     Mountable mountable = new InMemoryMountable();
 
@@ -35,14 +43,45 @@ public class InMemoryMountableTest {
     }
 
     @Test
-    public void shouldGetAllElements() {
-        mountable.put(new Path("/foo"), foo);
-        mountable.put(new Path("/bar"), bar);
+    @SuppressWarnings("unchecked")
+    public void shouldFindIntermediatePaths() {
+        mountable.put(new Path("/foo/bar"), bar);
+        mountable.put(new Path("/foo/baz/qux"), qux);
 
-        mountable.all(handler);
+        mountable.list(Path.ROOT, listHandler);
 
-        verify(handler).found(new Path("/foo"), foo);
-        verify(handler).found(new Path("/bar"), bar);
+        verify(listHandler).found(argThat((Matcher<Map<Path, Node>>)allOf(
+                (Matcher) hasKey(new Path("/foo")),
+                (Matcher) hasValue(instanceOf(Directory.class)))));
+    }
+
+    @Test
+    public void shouldNotFindAnyElements() {
+        mountable.put(new Path("/foo/bar"), bar);
+
+        mountable.list(new Path("/bar"), listHandler);
+
+        verify(listHandler).notFound(new Path("/bar"));
+    }
+
+    @Test
+    public void shouldReturnNotFoundValueWhenNoElementsFound() {
+        when(listHandler.notFound(any(Path.class)))
+                .thenReturn(5);
+        mountable.put(new Path("/foo/bar"), bar);
+
+        Integer result = mountable.list(new Path("/bar"), listHandler);
+
+        assertThat(result, equalTo(5));
+    }
+
+    @Test
+    public void shouldReturnHandlerResultForAll() {
+        when(listHandler.found(anyMapOf(Path.class, Node.class))).thenReturn(0);
+
+        int result = mountable.list(new Path("/"), listHandler);
+
+        assertEquals(0, result);
     }
 
     @Test
@@ -62,21 +101,13 @@ public class InMemoryMountableTest {
     }
 
     @Test
-    public void shouldReturnHandlerResultForAll() {
-        when(handler.result()).thenReturn(0);
-
-        int result = mountable.all(handler);
-
-        assertEquals(0, result);
-    }
-
-    @Test
     public void shouldPutIntermediateDirectories() {
         mountable.put(new Path("/foo/bar/baz"), foo);
 
-        mountable.all(handler);
+        mountable.with(new Path("/foo"), handler);
+        mountable.with(new Path("/foo/bar"), handler);
+        mountable.with(new Path("/foo/bar/baz"), handler);
 
-        verify(handler).found(eq(Path.ROOT), any(Directory.class));
         verify(handler).found(eq(new Path("/foo")), any(Directory.class));
         verify(handler).found(eq(new Path("/foo/bar")), any(Directory.class));
         verify(handler).found(new Path("/foo/bar/baz"), foo);
@@ -87,11 +118,10 @@ public class InMemoryMountableTest {
         mountable.put(new Path("/foo/bar"), foo);
         mountable.put(new Path("/foo"), foo);
 
-        mountable.all(handler);
+        mountable.with(new Path("/foo"), handler);
+        mountable.with(new Path("/foo/bar"), handler);
 
-        verify(handler).found(eq(Path.ROOT), any(Directory.class));
-        verify(handler).found(eq(new Path("/foo")), any(Directory.class));
-        verify(handler).result();
-        verifyNoMoreInteractions(handler);
+        verify(handler).found(new Path("/foo"), foo);
+        verify(handler, never()).found(eq(new Path("/foo/bar")), any(Directory.class));
     }
 }

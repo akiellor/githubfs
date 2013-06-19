@@ -27,7 +27,7 @@ public class FileSystem extends FuseFilesystemAdapterFull {
     }
 
     @Override public int readdir(String path, final DirectoryFiller filler) {
-        return mountable.all(new ReadDirHandler(new Path(path), filler));
+        return mountable.list(new Path(path), new ReadDirHandler(filler));
     }
 
     @Override public int write(String path, ByteBuffer buf, long bufSize, long writeOffset, StructFuseFileInfo.FileInfoWrapper info) {

@@ -15,6 +15,7 @@ dependencies {
   compile name: 'fuse-jna'
   compile 'org.kohsuke:github-api:1.42'
   compile 'net.java.dev.jna:jna:3.5.2'
+  compile 'com.google.guava:guava:14.0.1'
 
   testCompile 'junit:junit-dep:4.11'
   testCompile 'org.hamcrest:hamcrest-all:1.3'

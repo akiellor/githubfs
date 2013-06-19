@@ -1,5 +1,7 @@
 package githubfs;
 
+import com.google.common.collect.Maps;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,10 +31,16 @@ public class InMemoryMountable implements Mountable {
         return handler.result();
     }
 
-    @Override public <T> T all(Handler<T> handler) {
-        for(Map.Entry<Path, Node> entry : nodes.entrySet()){
-            handler.found(entry.getKey(), entry.getValue());
+    @Override public <T> T list(Path path, ListHandler<T> listHandler) {
+        if(!nodes.keySet().contains(path)){
+            return listHandler.notFound(path);
         }
-        return handler.result();
+        Map<Path, Node> found = Maps.newHashMap();
+        for(Map.Entry<Path, Node> entry : nodes.entrySet()){
+            if(path.isParentOf(entry.getKey())){
+                found.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return listHandler.found(found);
     }
 }

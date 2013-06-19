@@ -6,30 +6,25 @@ import githubfs.Path;
 import net.fusejna.DirectoryFiller;
 import net.fusejna.ErrorCodes;
 
-public class ReadDirHandler implements Mountable.Handler<Integer> {
-    private final Path parent;
-    private final DirectoryFiller filler;
-    private boolean dotDirsWritten = false;
-    private int result = -ErrorCodes.ENOENT;
+import java.util.Map;
 
-    public ReadDirHandler(Path parent, DirectoryFiller filler) {
-        this.parent = parent;
+public class ReadDirHandler implements Mountable.ListHandler<Integer> {
+    private final DirectoryFiller filler;
+
+    public ReadDirHandler(DirectoryFiller filler) {
         this.filler = filler;
     }
 
-    @Override public void found(Path path, Node issue) {
-        if(parent.isParentOf(path)){
-            result = 0;
-            if(!dotDirsWritten){
-                filler.add(".");
-                filler.add("..");
-                dotDirsWritten = true;
-            }
+    @Override public Integer found(Map<Path, Node> entries) {
+        filler.add(".");
+        filler.add("..");
+        for (Path path : entries.keySet()) {
             filler.add(path.basename());
         }
+        return 0;
     }
 
-    @Override public Integer result() {
-        return result;
+    @Override public Integer notFound(Path path) {
+        return -ErrorCodes.ENOENT;
     }
 }

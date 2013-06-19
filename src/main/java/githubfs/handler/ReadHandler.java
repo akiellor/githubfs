@@ -4,6 +4,7 @@ import githubfs.Content;
 import githubfs.Mountable;
 import githubfs.Node;
 import githubfs.Path;
+import net.fusejna.ErrorCodes;
 import net.fusejna.StructFuseFileInfo;
 
 import java.nio.ByteBuffer;
@@ -13,7 +14,6 @@ public class ReadHandler implements Mountable.Handler<Integer> {
     private final int size;
     private final int offset;
     private final StructFuseFileInfo.FileInfoWrapper info;
-    private int bytesRead = 0;
 
     public ReadHandler(ByteBuffer buffer, int size, int offset, StructFuseFileInfo.FileInfoWrapper info){
         this.buffer = buffer;
@@ -22,14 +22,14 @@ public class ReadHandler implements Mountable.Handler<Integer> {
         this.info = info;
     }
 
-    @Override public void found(Path path, Node node) {
+    @Override public Integer found(Path path, Node node) {
         ReadOutput file = new ReadOutput(buffer, size, offset, info);
         node.describe(file);
-        this.bytesRead = file.getBytesRead();
+        return file.getBytesRead();
     }
 
-    @Override public Integer result() {
-        return bytesRead;
+    @Override public Integer notFound(Path path) {
+        return -ErrorCodes.ENOENT;
     }
 
     private static class ReadOutput implements Node.Output {

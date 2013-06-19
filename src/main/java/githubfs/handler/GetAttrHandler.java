@@ -10,20 +10,18 @@ import net.fusejna.types.TypeMode;
 
 public class GetAttrHandler implements Mountable.Handler<Integer> {
     private final StructStat.StatWrapper stat;
-    private int result;
 
     public GetAttrHandler(StructStat.StatWrapper stat) {
         this.stat = stat;
-        result = -ErrorCodes.ENOENT;
     }
 
-    @Override public void found(Path path, Node issue) {
-        result = 0;
+    @Override public Integer found(Path path, Node issue) {
         issue.describe(new StatOutput(stat));
+        return 0;
     }
 
-    @Override public Integer result() {
-        return result;
+    @Override public Integer notFound(Path path) {
+        return -ErrorCodes.ENOENT;
     }
 
     public static class StatOutput implements Node.Output {

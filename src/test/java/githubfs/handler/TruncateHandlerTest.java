@@ -21,7 +21,7 @@ public class TruncateHandlerTest {
         TruncateHandler handler = new TruncateHandler(0);
         final Content content = Content.from("foo");
 
-        handler.found(path, new Node() {
+        Integer result = handler.found(path, new Node() {
             @Override public void describe(Output output) {
             }
 
@@ -29,7 +29,6 @@ public class TruncateHandlerTest {
                 input.content(content);
             }
         });
-        Integer result = handler.result();
 
         assertThat(content.getContent(), equalTo(""));
         assertThat(result, equalTo(0));
@@ -40,7 +39,7 @@ public class TruncateHandlerTest {
         TruncateHandler handler = new TruncateHandler(1);
         final Content content = Content.from("foo");
 
-        handler.found(path, new Node() {
+        Integer result = handler.found(path, new Node() {
             @Override public void describe(Output output) {
             }
 
@@ -48,7 +47,6 @@ public class TruncateHandlerTest {
                 input.content(content);
             }
         });
-        Integer result = handler.result();
 
         assertThat(content.getContent(), equalTo("f"));
         assertThat(result, equalTo(0));
@@ -56,7 +54,7 @@ public class TruncateHandlerTest {
 
     @Test
     public void shouldReturnENOENTWhenNotFound() {
-        Integer result = new TruncateHandler(0).result();
+        Integer result = new TruncateHandler(0).notFound(Path.ROOT);
 
         assertThat(result, equalTo(-ErrorCodes.ENOENT));
     }

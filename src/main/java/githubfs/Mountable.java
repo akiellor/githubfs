@@ -10,8 +10,8 @@ public interface Mountable {
     <T> T list(Path path, ListHandler<T> listHandler);
 
     public interface Handler<T> {
-        void found(Path path, Node node);
-        T result();
+        T found(Path path, Node node);
+        T notFound(Path path);
     }
 
     public interface ListHandler<T> {

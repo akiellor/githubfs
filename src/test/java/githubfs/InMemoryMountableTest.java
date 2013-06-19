@@ -93,7 +93,7 @@ public class InMemoryMountableTest {
 
     @Test
     public void shouldReturnHandlerResultForWith() {
-        when(handler.result()).thenReturn(0);
+        when(handler.notFound(any(Path.class))).thenReturn(0);
 
         int result = mountable.with(new Path("/foo"), handler);
 

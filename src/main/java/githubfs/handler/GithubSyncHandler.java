@@ -4,6 +4,7 @@ import githubfs.Content;
 import githubfs.Mountable;
 import githubfs.Node;
 import githubfs.Path;
+import net.fusejna.ErrorCodes;
 import net.fusejna.StructFuseFileInfo;
 import org.kohsuke.github.GHIssue;
 import org.kohsuke.github.GHRepository;
@@ -19,9 +20,9 @@ public class GithubSyncHandler implements Mountable.Handler<Integer> {
         this.repository = repository;
     }
 
-    @Override public void found(final Path path, Node node) {
+    @Override public Integer found(final Path path, Node node) {
         if(info.openMode() == StructFuseFileInfo.FileInfoWrapper.OpenMode.READONLY){
-            return;
+            return 0;
         }
 
         node.update(new Node.Input() {
@@ -34,9 +35,10 @@ public class GithubSyncHandler implements Mountable.Handler<Integer> {
                 }
             }
         });
+        return 0;
     }
 
-    @Override public Integer result() {
-        return 0;
+    @Override public Integer notFound(Path path) {
+        return -ErrorCodes.ENOENT;
     }
 }

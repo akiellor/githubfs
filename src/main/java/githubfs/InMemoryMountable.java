@@ -26,9 +26,10 @@ public class InMemoryMountable implements Mountable {
 
     @Override public <T> T with(Path path, Handler<T> handler) {
         if(nodes.containsKey(path)){
-            handler.found(path, nodes.get(path));
+            return handler.found(path, nodes.get(path));
+        }else{
+            return handler.notFound(path);
         }
-        return handler.result();
     }
 
     @Override public <T> T list(Path path, ListHandler<T> listHandler) {

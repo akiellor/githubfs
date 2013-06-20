@@ -3,8 +3,6 @@ package githubfs;
 import java.util.Map;
 
 public interface Mountable {
-    void put(Path path, Node writable);
-
     <T> T with(Path path, Handler<T> handler);
 
     <T> T list(Path path, ListHandler<T> listHandler);

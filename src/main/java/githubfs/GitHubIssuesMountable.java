@@ -18,10 +18,6 @@ public class GitHubIssuesMountable implements Mountable{
         this.nodes = new ConcurrentHashMap<Path, Node>();
     }
 
-    @Override public void put(Path path, Node writable) {
-        throw new UnsupportedOperationException();
-    }
-
     @Override public <T> T with(Path path, Handler<T> handler) {
         if (!refresh()) { return handler.notFound(path); }
         if (nodes.containsKey(path)) {

@@ -126,9 +126,4 @@ public class GitHubIssuesMountableTest {
 
         verify(handler).notFound(new Path("/1"));
     }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void shouldNotSupportPut() {
-        new GitHubIssuesMountable(repository).put(Path.ROOT, node);
-    }
 }

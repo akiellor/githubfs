@@ -19,6 +19,9 @@ public class GitHubIssuesMountable implements Mountable{
     }
 
     @Override public <T> T with(Path path, Handler<T> handler) {
+        if(Path.ROOT.equals(path)){
+            return handler.found(path, new Directory());
+        }
         GHIssue ghIssue;
         try {
             int ghIssueId = Integer.parseInt(path.basename());

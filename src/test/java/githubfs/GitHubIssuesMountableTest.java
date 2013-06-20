@@ -16,7 +16,9 @@ import java.io.IOException;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +37,15 @@ public class GitHubIssuesMountableTest {
         when(ghIssue.getNumber()).thenReturn(1);
         when(ghIssue.getBody()).thenReturn("Foo");
         issue = new Issue(Content.from("Foo"));
+    }
+
+    @Test
+    public void shouldHaveADirectoryRoot() {
+        GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
+
+        mountable.with(Path.ROOT, handler);
+
+        verify(handler).found(eq(Path.ROOT), any(Directory.class));
     }
 
     @Test

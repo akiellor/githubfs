@@ -36,6 +36,10 @@ public class FileSystem extends FuseFilesystemAdapterFull {
     }
 
     @Override public int release(String path, StructFuseFileInfo.FileInfoWrapper info) {
-        return mountable.with(new Path(path).forWrite(), new GithubSyncHandler());
+        if(info.openMode().equals(StructFuseFileInfo.FileInfoWrapper.OpenMode.READONLY)){
+            return mountable.with(new Path(path).forRead(), new GithubSyncHandler());
+        }else{
+            return mountable.with(new Path(path).forWrite(), new GithubSyncHandler());
+        }
     }
 }

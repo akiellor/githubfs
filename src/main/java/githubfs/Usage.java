@@ -60,4 +60,12 @@ public abstract class Usage {
         result = 31 * result + (mode != null ? mode.hashCode() : 0);
         return result;
     }
+
+    @Override public String toString() {
+        final StringBuilder sb = new StringBuilder("Usage{");
+        sb.append("path=").append(path);
+        sb.append(", mode=").append(mode);
+        sb.append('}');
+        return sb.toString();
+    }
 }

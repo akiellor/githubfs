@@ -75,6 +75,14 @@ public class Path {
         return path.ancestors().contains(this);
     }
 
+    public Usage forWrite() {
+        return Usage.write(this);
+    }
+
+    public Usage forRead() {
+        return Usage.read(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -60,4 +60,10 @@ public class PathTest {
         assertThat(Path.IS_ROOT.apply(Path.ROOT), is(true));
         assertThat(Path.IS_ROOT.apply(new Path("/foo")), is(false));
     }
+
+    @Test
+    public void shouldCreateUsages() {
+        assertThat(new Path("/foo").forWrite(), equalTo(Usage.write(new Path("/foo"))));
+        assertThat(new Path("/foo").forRead(), equalTo(Usage.read(new Path("/foo"))));
+    }
 }

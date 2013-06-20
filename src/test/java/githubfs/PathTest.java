@@ -6,6 +6,7 @@ import org.junit.rules.ExpectedException;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 
@@ -52,5 +53,11 @@ public class PathTest {
         assertTrue(new Path("/foo").isAncestorOf(new Path("/foo/bar")));
         assertFalse(new Path("/foo").isAncestorOf(Path.ROOT));
         assertFalse(new Path("/foo/bar").isAncestorOf(new Path("/foo")));
+    }
+
+    @Test
+    public void shouldMatchRootPathWithPredicate() {
+        assertThat(Path.IS_ROOT.apply(Path.ROOT), is(true));
+        assertThat(Path.IS_ROOT.apply(new Path("/foo")), is(false));
     }
 }

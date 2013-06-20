@@ -1,5 +1,7 @@
 package githubfs;
 
+import com.google.common.base.Predicate;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -7,6 +9,11 @@ import java.util.List;
 
 public class Path {
     public static final Path ROOT = new Path("/");
+    public static final Predicate<Path> IS_ROOT = new Predicate<Path>() {
+        @Override public boolean apply(Path input) {
+            return ROOT.equals(input);
+        }
+    };
 
     private final LinkedList<String> parts;
 

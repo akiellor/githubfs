@@ -90,7 +90,7 @@ public class GitHubIssuesMountableTest {
 
     @Test
     public void shouldFindIssueById() throws IOException {
-        when(repository.getIssue(1)).thenReturn(ghIssue);
+        when(repository.getIssues(GHIssueState.OPEN)).thenReturn(ImmutableList.of(ghIssue));
         GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
 
         mountable.with(new Path("/1"), handler);

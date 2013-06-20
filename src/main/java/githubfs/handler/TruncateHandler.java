@@ -15,7 +15,7 @@ public class TruncateHandler implements Mountable.Handler<Integer> {
         this.offset = offset;
     }
 
-    @Override public Integer found(Path path, Node node) {
+    @Override public Integer found(Path path, Node node, Mountable.Control control) {
         node.update(new Node.Input() {
             @Override public void content(Content content) {
                 content.write(ByteBuffer.allocate(0), 0, offset);

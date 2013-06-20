@@ -19,11 +19,11 @@ public class FileSystem extends FuseFilesystemAdapterFull {
     }
 
     @Override public int getattr(String path, final StructStat.StatWrapper stat) {
-        return mountable.with(new Path(path), new GetAttrHandler(stat));
+        return mountable.with(new Path(path).forRead(), new GetAttrHandler(stat));
     }
 
     @Override public int read(String path, final ByteBuffer buffer, long size, long offset, final StructFuseFileInfo.FileInfoWrapper info) {
-        return mountable.with(new Path(path), new ReadHandler(buffer, (int) size, (int) offset, info));
+        return mountable.with(new Path(path).forRead(), new ReadHandler(buffer, (int) size, (int) offset, info));
     }
 
     @Override public int readdir(String path, final DirectoryFiller filler) {
@@ -31,14 +31,14 @@ public class FileSystem extends FuseFilesystemAdapterFull {
     }
 
     @Override public int write(String path, ByteBuffer buf, long bufSize, long writeOffset, StructFuseFileInfo.FileInfoWrapper info) {
-        return mountable.with(new Path(path), new WriteHandler(buf, bufSize, writeOffset, info));
+        return mountable.with(new Path(path).forWrite(), new WriteHandler(buf, bufSize, writeOffset, info));
     }
 
     @Override public int truncate(String path, long offset) {
-        return mountable.with(new Path(path), new TruncateHandler(offset));
+        return mountable.with(new Path(path).forWrite(), new TruncateHandler(offset));
     }
 
     @Override public int release(String path, StructFuseFileInfo.FileInfoWrapper info) {
-        return mountable.with(new Path(path), new GithubSyncHandler(info, repository));
+        return mountable.with(new Path(path).forWrite(), new GithubSyncHandler(info, repository));
     }
 }

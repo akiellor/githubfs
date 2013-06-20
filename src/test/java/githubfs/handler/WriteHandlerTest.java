@@ -32,7 +32,7 @@ public class WriteHandlerTest {
     public void shouldUpdateNode() {
         WriteHandler handler = new WriteHandler(byteBuffer, -1, -1, info);
 
-        handler.found(path, node);
+        handler.found(path, node, null);
 
         verify(node).update(any(WriteHandler.WriteInput.class));
     }
@@ -53,7 +53,7 @@ public class WriteHandlerTest {
             @Override public void update(Input input) {
                 input.content(content);
             }
-        });
+        }, null);
 
         content.read(read, 3, 0);
         assertThat(read.array(), equalTo(new byte[]{'f', 'o', 'o'}));

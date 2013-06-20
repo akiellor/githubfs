@@ -28,7 +28,7 @@ public class TruncateHandlerTest {
             @Override public void update(Input input) {
                 input.content(content);
             }
-        });
+        }, null);
 
         assertThat(content.getContent(), equalTo(""));
         assertThat(result, equalTo(0));
@@ -46,7 +46,7 @@ public class TruncateHandlerTest {
             @Override public void update(Input input) {
                 input.content(content);
             }
-        });
+        }, null);
 
         assertThat(content.getContent(), equalTo("f"));
         assertThat(result, equalTo(0));

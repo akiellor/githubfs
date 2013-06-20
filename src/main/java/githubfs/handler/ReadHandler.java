@@ -22,7 +22,7 @@ public class ReadHandler implements Mountable.Handler<Integer> {
         this.info = info;
     }
 
-    @Override public Integer found(Path path, Node node) {
+    @Override public Integer found(Path path, Node node, Mountable.Control control) {
         ReadOutput file = new ReadOutput(buffer, size, offset, info);
         node.describe(file);
         return file.getBytesRead();

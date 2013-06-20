@@ -6,22 +6,32 @@ import org.kohsuke.github.GHIssue;
 import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHRepository;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
 
 public class GitHubIssuesMountable implements Mountable{
     private final GHRepository repository;
     private final Map<Path, Node> nodes;
+    private final Set<Usage> writeUsages;
 
     public GitHubIssuesMountable(GHRepository repository) {
         this.repository = repository;
-        this.nodes = new ConcurrentHashMap<Path, Node>();
+        this.nodes = new HashMap<Path, Node>();
+        this.writeUsages = new HashSet<Usage>();
+        refresh();
     }
 
-    @Override public <T> T with(Path path, Handler<T> handler) {
-        if (!refresh()) { return handler.notFound(path); }
+    @Override public <T> T with(Usage usage, Handler<T> handler) {
+        if(usage.isWrite() && !writeUsages.contains(usage)){
+            refresh();
+            writeUsages.add(usage);
+        }
+        Path path = usage.path();
         if (nodes.containsKey(path)) {
-            return handler.found(path, nodes.get(path));
+            return handler.found(path, nodes.get(path), new GitHubControl(usage, nodes.get(path)));
         } else {
             return handler.notFound(path);
         }
@@ -49,5 +59,39 @@ public class GitHubIssuesMountable implements Mountable{
 
     private Issue toIssue(GHIssue issue) {
         return new Issue(Content.from(issue.getBody()));
+    }
+
+    private class GitHubControl implements Control{
+        private final Usage usage;
+        private final Node node;
+
+        public GitHubControl(Usage usage, Node node){
+            this.usage = usage;
+            this.node = node;
+        }
+
+        @Override public void release() {
+            if(usage.isWrite()){
+                writeUsages.remove(usage);
+                node.describe(new Node.Output() {
+                    @Override public void content(Content content) {
+                        try {
+                            repository.getIssue(Integer.valueOf(usage.path().basename())).setBody(content.getContent());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    @Override public void file() {
+                    }
+
+                    @Override public void directory() {
+                    }
+
+                    @Override public void executable() {
+                    }
+                });
+            }
+        }
     }
 }

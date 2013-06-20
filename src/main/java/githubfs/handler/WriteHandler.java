@@ -22,7 +22,7 @@ public class WriteHandler implements Mountable.Handler<Integer> {
         this.info = info;
     }
 
-    @Override public Integer found(Path path, Node node) {
+    @Override public Integer found(Path path, Node node, Mountable.Control control) {
         WriteInput input = new WriteInput(buf, bufSize, writeOffset, info);
         node.update(input);
         return input.getBytesWritten();

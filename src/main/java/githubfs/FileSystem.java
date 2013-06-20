@@ -5,17 +5,14 @@ import net.fusejna.DirectoryFiller;
 import net.fusejna.StructFuseFileInfo;
 import net.fusejna.StructStat;
 import net.fusejna.util.FuseFilesystemAdapterFull;
-import org.kohsuke.github.GHRepository;
 
 import java.nio.ByteBuffer;
 
 public class FileSystem extends FuseFilesystemAdapterFull {
     private final Mountable mountable;
-    private final GHRepository repository;
 
-    public FileSystem(Mountable mountable, GHRepository repository) {
+    public FileSystem(Mountable mountable) {
         this.mountable = mountable;
-        this.repository = repository;
     }
 
     @Override public int getattr(String path, final StructStat.StatWrapper stat) {
@@ -39,6 +36,6 @@ public class FileSystem extends FuseFilesystemAdapterFull {
     }
 
     @Override public int release(String path, StructFuseFileInfo.FileInfoWrapper info) {
-        return mountable.with(new Path(path).forWrite(), new GithubSyncHandler(info, repository));
+        return mountable.with(new Path(path).forWrite(), new GithubSyncHandler());
     }
 }

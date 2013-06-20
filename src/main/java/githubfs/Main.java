@@ -11,7 +11,7 @@ public class Main {
             GitHub github = GitHub.connect(args[0], args[1]);
             GHRepository repository = github.getRepository(args[2]);
             final Mountable mountable = new GitHubIssuesMountable(repository);
-            FileSystem fileSystem = new FileSystem(mountable, repository);
+            FileSystem fileSystem = new FileSystem(mountable);
             fileSystem.mount(new File(args[3]));
         } catch (Exception e) {
             throw new RuntimeException(e);

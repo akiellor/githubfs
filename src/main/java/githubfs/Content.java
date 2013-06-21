@@ -63,4 +63,13 @@ public class Content {
         sb.append('}');
         return sb.toString();
     }
+
+    public String getTitle() {
+        return content.split("\\n")[0];
+    }
+
+    public String getBody() {
+        String[] parts = content.split("\\n", 2);
+        return parts.length > 1 ? parts[1] : "";
+    }
 }

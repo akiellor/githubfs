@@ -39,15 +39,17 @@ public class GitHubIssuesMountableTest {
         when(ghFoo.getCreatedAt()).thenReturn(new Date(1234L));
         when(ghFoo.getUpdatedAt()).thenReturn(new Date(5678L));
         when(ghFoo.getNumber()).thenReturn(1);
-        when(ghFoo.getBody()).thenReturn("Foo");
+        when(ghFoo.getTitle()).thenReturn("Foo");
+        when(ghFoo.getBody()).thenReturn("Body");
         when(ghFooBar.getCreatedAt()).thenReturn(new Date(1234L));
         when(ghFooBar.getUpdatedAt()).thenReturn(new Date(5678L));
         when(ghFooBar.getNumber()).thenReturn(1);
-        when(ghFooBar.getBody()).thenReturn("FooBar");
+        when(ghFooBar.getTitle()).thenReturn("FooBar");
+        when(ghFooBar.getBody()).thenReturn("Body");
         when(repository.getIssues(GHIssueState.OPEN)).thenReturn(ImmutableList.of(ghFoo));
         when(repository.getIssue(1)).thenReturn(ghFoo);
-        foo = new Issue(1234L, 5678L, Content.from("Foo"));
-        fooBar = new Issue(1234L, 5678L, Content.from("FooBar"));
+        foo = new Issue(1234L, 5678L, Content.from("Foo\nBody"));
+        fooBar = new Issue(1234L, 5678L, Content.from("FooBar\nBody"));
     }
 
     @Test

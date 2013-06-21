@@ -97,4 +97,20 @@ public class ContentTest {
     public void shouldBeEqualWhenContentEqual() {
         assertThat(Content.from("Foo"), equalTo(Content.from("Foo")));
     }
+
+    @Test
+    public void shouldTreatFirstLineAsTitle() {
+        Content foo = Content.from("Foo\nBar");
+
+        assertThat(foo.getTitle(), equalTo("Foo"));
+        assertThat(foo.getBody(), equalTo("Bar"));
+    }
+
+    @Test
+    public void shouldHaveNoBodyWhenNoSecondLine() {
+        Content foo = Content.from("Foo");
+
+        assertThat(foo.getTitle(), equalTo("Foo"));
+        assertThat(foo.getBody(), equalTo(""));
+    }
 }

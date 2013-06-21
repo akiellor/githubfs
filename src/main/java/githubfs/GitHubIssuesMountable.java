@@ -54,7 +54,7 @@ public class GitHubIssuesMountable implements Mountable{
     }
 
     private Issue toIssue(GHIssue issue) {
-        return new Issue(issue.getCreatedAt().getTime(), issue.getUpdatedAt().getTime(), Content.from(issue.getBody()));
+        return new Issue(issue.getCreatedAt().getTime(), issue.getUpdatedAt().getTime(), Content.from(issue.getTitle() + "\n" + issue.getBody()));
     }
 
     private class GitHubControl implements Control{
@@ -72,7 +72,9 @@ public class GitHubIssuesMountable implements Mountable{
                 node.describe(new Node.AbstractOutput() {
                     @Override public void content(Content content) {
                         try {
-                            repository.getIssue(Integer.valueOf(usage.path().basename())).setBody(content.getContent());
+                            GHIssue issue = repository.getIssue(Integer.valueOf(usage.path().basename()));
+                            issue.setTitle(content.getTitle());
+                            issue.setBody(content.getBody());
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }

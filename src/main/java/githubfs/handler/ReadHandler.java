@@ -32,7 +32,7 @@ public class ReadHandler implements Mountable.Handler<Integer> {
         return -ErrorCodes.ENOENT;
     }
 
-    private static class ReadOutput implements Node.Output {
+    private static class ReadOutput extends Node.AbstractOutput {
         private final ByteBuffer buffer;
         private final int size;
         private final int offset;
@@ -53,21 +53,6 @@ public class ReadHandler implements Mountable.Handler<Integer> {
 
         public int getBytesRead() {
             return bytesRead;
-        }
-
-        @Override public void updatedAt(Long time) {
-        }
-
-        @Override public void createdAt(Long time) {
-        }
-
-        @Override public void file() {
-        }
-
-        @Override public void directory() {
-        }
-
-        @Override public void executable() {
         }
     }
 }

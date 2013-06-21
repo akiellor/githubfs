@@ -64,28 +64,13 @@ public class GitHubIssuesMountable implements Mountable{
 
         @Override public void release() {
             if(usage.isWrite()){
-                node.describe(new Node.Output() {
+                node.describe(new Node.AbstractOutput() {
                     @Override public void content(Content content) {
                         try {
                             repository.getIssue(Integer.valueOf(usage.path().basename())).setBody(content.getContent());
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-                    }
-
-                    @Override public void updatedAt(Long time) {
-                    }
-
-                    @Override public void createdAt(Long time) {
-                    }
-
-                    @Override public void file() {
-                    }
-
-                    @Override public void directory() {
-                    }
-
-                    @Override public void executable() {
                     }
                 });
             }

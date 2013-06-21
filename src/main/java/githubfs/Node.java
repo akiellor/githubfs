@@ -19,6 +19,26 @@ public interface Node {
         void createdAt(Long time);
     }
 
+    public static class AbstractOutput implements Output{
+        @Override public void content(Content content) {
+        }
+
+        @Override public void file() {
+        }
+
+        @Override public void directory() {
+        }
+
+        @Override public void executable() {
+        }
+
+        @Override public void updatedAt(Long time) {
+        }
+
+        @Override public void createdAt(Long time) {
+        }
+    }
+
     public interface Input {
         void content(Content content);
     }

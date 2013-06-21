@@ -56,4 +56,11 @@ public class Content {
     public int hashCode() {
         return content != null ? content.hashCode() : 0;
     }
+
+    @Override public String toString() {
+        final StringBuilder sb = new StringBuilder("Content{");
+        sb.append("content='").append(content).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }

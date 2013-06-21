@@ -45,4 +45,13 @@ public class Issue implements Node {
         result = 31 * result + (int) (updatedAt ^ (updatedAt >>> 32));
         return result;
     }
+
+    @Override public String toString() {
+        final StringBuilder sb = new StringBuilder("Issue{");
+        sb.append("createdAt=").append(createdAt);
+        sb.append(", body=").append(body);
+        sb.append(", updatedAt=").append(updatedAt);
+        sb.append('}');
+        return sb.toString();
+    }
 }

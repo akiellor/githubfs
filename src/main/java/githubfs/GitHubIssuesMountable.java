@@ -8,15 +8,19 @@ import org.kohsuke.github.GHRepository;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class GitHubIssuesMountable implements Mountable{
     private final GHRepository repository;
     private final Map<Path, Node> nodes;
+    private final Set<Path> marked;
 
     public GitHubIssuesMountable(GHRepository repository) {
         this.repository = repository;
         this.nodes = new HashMap<Path, Node>();
+        this.marked = new HashSet<Path>();
     }
 
     @Override public <T> T with(Usage usage, Handler<T> handler) {
@@ -35,17 +39,17 @@ public class GitHubIssuesMountable implements Mountable{
     }
 
     private boolean refresh(){
-        synchronized (nodes){
-            try {
-                nodes.clear();
-                nodes.put(Path.ROOT, new Directory());
-                for (GHIssue issue : repository.getIssues(GHIssueState.OPEN)) {
-                    nodes.put(new Path("/" + issue.getNumber()), toIssue(issue));
+        try {
+            nodes.put(Path.ROOT, new Directory());
+            for (GHIssue issue : repository.getIssues(GHIssueState.OPEN)) {
+                Path path = new Path("/" + issue.getNumber());
+                if(!marked.contains(path)) {
+                    nodes.put(path, toIssue(issue));
                 }
-                return true;
-            } catch (Exception e) {
-                return false;
             }
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
@@ -64,6 +68,7 @@ public class GitHubIssuesMountable implements Mountable{
 
         @Override public void release() {
             if(usage.isWrite()){
+                marked.remove(usage.path());
                 node.describe(new Node.AbstractOutput() {
                     @Override public void content(Content content) {
                         try {
@@ -73,6 +78,13 @@ public class GitHubIssuesMountable implements Mountable{
                         }
                     }
                 });
+            }
+        }
+
+        @Override public void open() {
+            if(usage.isWrite()){
+                refresh();
+                marked.add(usage.path());
             }
         }
     }

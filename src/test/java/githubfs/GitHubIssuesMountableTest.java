@@ -27,20 +27,27 @@ public class GitHubIssuesMountableTest {
     @Mock GHRepository repository;
     @Mock Mountable.ListHandler<Integer> listHandler;
     @Mock Mountable.Handler<Integer> handler;
-    @Mock GHIssue ghIssue;
+    @Mock GHIssue ghFoo;
+    @Mock GHIssue ghFooBar;
     @Mock Node node;
 
-    Issue issue;
+    Issue foo;
+    Issue fooBar;
 
     @Before
     public void setup() throws IOException {
-        when(ghIssue.getCreatedAt()).thenReturn(new Date(1234L));
-        when(ghIssue.getUpdatedAt()).thenReturn(new Date(5678L));
-        when(ghIssue.getNumber()).thenReturn(1);
-        when(ghIssue.getBody()).thenReturn("Foo");
-        when(repository.getIssues(GHIssueState.OPEN)).thenReturn(ImmutableList.of(ghIssue));
-        when(repository.getIssue(1)).thenReturn(ghIssue);
-        issue = new Issue(1234L, 5678L, Content.from("Foo"));
+        when(ghFoo.getCreatedAt()).thenReturn(new Date(1234L));
+        when(ghFoo.getUpdatedAt()).thenReturn(new Date(5678L));
+        when(ghFoo.getNumber()).thenReturn(1);
+        when(ghFoo.getBody()).thenReturn("Foo");
+        when(ghFooBar.getCreatedAt()).thenReturn(new Date(1234L));
+        when(ghFooBar.getUpdatedAt()).thenReturn(new Date(5678L));
+        when(ghFooBar.getNumber()).thenReturn(1);
+        when(ghFooBar.getBody()).thenReturn("FooBar");
+        when(repository.getIssues(GHIssueState.OPEN)).thenReturn(ImmutableList.of(ghFoo));
+        when(repository.getIssue(1)).thenReturn(ghFoo);
+        foo = new Issue(1234L, 5678L, Content.from("Foo"));
+        fooBar = new Issue(1234L, 5678L, Content.from("FooBar"));
     }
 
     @Test
@@ -70,7 +77,7 @@ public class GitHubIssuesMountableTest {
     @Test
     public void shouldListIssuesWhenIssuesArePresent() throws IOException {
         when(repository.getIssues(GHIssueState.OPEN))
-                .thenReturn(ImmutableList.of(ghIssue));
+                .thenReturn(ImmutableList.of(ghFoo));
         when(listHandler.found(anyMapOf(Path.class, Node.class)))
                 .thenReturn(0);
 
@@ -79,7 +86,7 @@ public class GitHubIssuesMountableTest {
         Integer result = mountable.list(Path.ROOT, listHandler);
 
         assertThat(result, equalTo(0));
-        verify(listHandler).found(ImmutableMap.<Path, Node>of(new Path("/1"), issue));
+        verify(listHandler).found(ImmutableMap.<Path, Node>of(new Path("/1"), foo));
     }
 
     @Test
@@ -94,12 +101,12 @@ public class GitHubIssuesMountableTest {
 
     @Test
     public void shouldFindIssueById() throws IOException {
-        when(repository.getIssues(GHIssueState.OPEN)).thenReturn(ImmutableList.of(ghIssue));
+        when(repository.getIssues(GHIssueState.OPEN)).thenReturn(ImmutableList.of(ghFoo));
         GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
 
         mountable.with(new Path("/1").forRead(), handler);
 
-        verify(handler).found(eq(new Path("/1")), eq(issue), any(Mountable.Control.class));
+        verify(handler).found(eq(new Path("/1")), eq(foo), any(Mountable.Control.class));
     }
 
     @Test
@@ -132,15 +139,61 @@ public class GitHubIssuesMountableTest {
     }
 
     @Test
-    public void shouldNotCacheAnythingOnTheLocalFileSystem() throws IOException {
+    public void shouldNotRefreshIssueOnceOpened() throws IOException {
         GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
 
-        mountable.with(new Path("/1").forRead(), handler);
-        mountable.with(new Path("/1").forRead(), handler);
-        mountable.with(new Path("/1").forWrite(), handler);
+        mountable.with(new Path("/1").forWrite(), new Mountable.Handler<Object>() {
+            @Override public Object found(Path path, Node node, Mountable.Control control) {
+                control.open();
+                return 0;
+            }
 
-        verify(handler, times(3)).found(eq(new Path("/1")), eq(issue), any(Mountable.Control.class));
-        verify(repository, times(3)).getIssues(GHIssueState.OPEN);
-        verifyNoMoreInteractions(repository, handler);
+            @Override public Object notFound(Path path) {
+                throw new UnsupportedOperationException();
+            }
+        });
+
+        when(repository.getIssues(GHIssueState.OPEN)).thenReturn(ImmutableList.of(ghFooBar));
+        when(repository.getIssue(1)).thenReturn(ghFooBar);
+
+        mountable.with(new Path("/1").forRead(), handler);
+
+        verify(handler).found(eq(new Path("/1")), eq(foo), any(Mountable.Control.class));
+        verifyNoMoreInteractions(handler);
+    }
+
+    @Test
+    public void shouldRefreshIssueOnceReleased() throws IOException {
+        GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
+
+        mountable.with(new Path("/1").forWrite(), new Mountable.Handler<Object>() {
+            @Override public Object found(Path path, Node node, Mountable.Control control) {
+                control.open();
+                return 0;
+            }
+
+            @Override public Object notFound(Path path) {
+                throw new UnsupportedOperationException();
+            }
+        });
+
+        when(repository.getIssues(GHIssueState.OPEN)).thenReturn(ImmutableList.of(ghFooBar));
+        when(repository.getIssue(1)).thenReturn(ghFooBar);
+
+        mountable.with(new Path("/1").forWrite(), new Mountable.Handler<Object>() {
+            @Override public Object found(Path path, Node node, Mountable.Control control) {
+                control.release();
+                return 0;
+            }
+
+            @Override public Object notFound(Path path) {
+                throw new UnsupportedOperationException();
+            }
+        });
+
+        mountable.with(new Path("/1").forRead(), handler);
+
+        verify(handler).found(eq(new Path("/1")), eq(fooBar), any(Mountable.Control.class));
+        verifyNoMoreInteractions(handler);
     }
 }

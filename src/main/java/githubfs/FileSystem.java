@@ -20,6 +20,14 @@ public class FileSystem extends FuseFilesystemAdapterFull {
         return super.log(true);
     }
 
+    @Override public int open(String path, StructFuseFileInfo.FileInfoWrapper info) {
+        if(info.openMode().equals(StructFuseFileInfo.FileInfoWrapper.OpenMode.READONLY)){
+            return mountable.with(new Path(path).forRead(), new OpenHandler());
+        }else{
+            return mountable.with(new Path(path).forWrite(), new OpenHandler());
+        }
+    }
+
     @Override public int getattr(String path, final StructStat.StatWrapper stat) {
         return mountable.with(new Path(path).forRead(), new GetAttrHandler(stat));
     }

@@ -1,5 +1,7 @@
 package githubfs;
 
+import githubfs.handler.GithubSyncHandler;
+import githubfs.handler.OpenHandler;
 import net.fusejna.StructFuseFileInfo;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +33,7 @@ public class FileSystemTest {
 
         fileSystem.release("/", info);
 
-        verify(mountable).with(eq(Path.ROOT.forWrite()), any(Mountable.Handler.class));
+        verify(mountable).with(eq(Path.ROOT.forWrite()), any(GithubSyncHandler.class));
     }
 
     @Test
@@ -41,7 +43,7 @@ public class FileSystemTest {
 
         fileSystem.release("/", info);
 
-        verify(mountable).with(eq(Path.ROOT.forWrite()), any(Mountable.Handler.class));
+        verify(mountable).with(eq(Path.ROOT.forWrite()), any(GithubSyncHandler.class));
     }
 
     @Test
@@ -51,6 +53,36 @@ public class FileSystemTest {
 
         fileSystem.release("/", info);
 
-        verify(mountable).with(eq(Path.ROOT.forRead()), any(Mountable.Handler.class));
+        verify(mountable).with(eq(Path.ROOT.forRead()), any(GithubSyncHandler.class));
+    }
+
+    @Test
+    public void shouldBeWriteUsageWhenOpeningReadWrite() {
+        when(info.openMode()).thenReturn(StructFuseFileInfo.FileInfoWrapper.OpenMode.READWRITE);
+        FileSystem fileSystem = new FileSystem(mountable);
+
+        fileSystem.open("/", info);
+
+        verify(mountable).with(eq(Path.ROOT.forWrite()), any(OpenHandler.class));
+    }
+
+    @Test
+    public void shouldBeWriteUsageWhenOpeningWrite() {
+        when(info.openMode()).thenReturn(StructFuseFileInfo.FileInfoWrapper.OpenMode.WRITEONLY);
+        FileSystem fileSystem = new FileSystem(mountable);
+
+        fileSystem.open("/", info);
+
+        verify(mountable).with(eq(Path.ROOT.forWrite()), any(OpenHandler.class));
+    }
+
+    @Test
+    public void shouldBeReadUsageWhenOpeningRead() {
+        when(info.openMode()).thenReturn(StructFuseFileInfo.FileInfoWrapper.OpenMode.READONLY);
+        FileSystem fileSystem = new FileSystem(mountable);
+
+        fileSystem.open("/", info);
+
+        verify(mountable).with(eq(Path.ROOT.forRead()), any(OpenHandler.class));
     }
 }

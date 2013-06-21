@@ -10,7 +10,6 @@ import org.kohsuke.github.GHIssue;
 import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHRepository;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
@@ -132,49 +131,15 @@ public class GitHubIssuesMountableTest {
     }
 
     @Test
-    public void shouldGetFromTheRepositoryOnceWhenRepeatedlyRead() throws IOException {
+    public void shouldNotCacheAnythingOnTheLocalFileSystem() throws IOException {
         GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
 
         mountable.with(new Path("/1").forRead(), handler);
         mountable.with(new Path("/1").forRead(), handler);
+        mountable.with(new Path("/1").forWrite(), handler);
 
-        verify(handler, times(2)).found(eq(new Path("/1")), eq(issue), any(Mountable.Control.class));
-        verify(repository).getIssues(GHIssueState.OPEN);
+        verify(handler, times(3)).found(eq(new Path("/1")), eq(issue), any(Mountable.Control.class));
+        verify(repository, times(3)).getIssues(GHIssueState.OPEN);
         verifyNoMoreInteractions(repository, handler);
-    }
-
-    @Test
-    public void shouldGetFromTheRepositoryWhenInitiallyOpenedForWrite() throws IOException {
-        GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
-
-        mountable.with(new Path("/1").forWrite(), handler);
-        mountable.with(new Path("/1").forWrite(), handler);
-
-        verify(handler, times(2)).found(eq(new Path("/1")), eq(issue), any(Mountable.Control.class));
-        verify(repository, times(2)).getIssues(GHIssueState.OPEN);
-        verifyNoMoreInteractions(repository, handler);
-    }
-
-    @Test
-    public void shouldReloadIssueAfterReleasedFromWrite() throws IOException {
-        GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
-
-        mountable.with(new Path("/1").forWrite(), handler);
-        mountable.with(new Path("/1").forWrite(), new Mountable.Handler<Object>() {
-            @Override public Object found(Path path, Node node, Mountable.Control control) {
-                control.release();
-                return 0;
-            }
-
-            @Override public Object notFound(Path path) {
-                throw new UnsupportedOperationException();
-            }
-        });
-
-        verify(repository, times(2)).getIssues(GHIssueState.OPEN);
-        Mockito.reset(repository);
-
-        mountable.with(new Path("/1").forWrite(), handler);
-        verify(repository).getIssues(GHIssueState.OPEN);
     }
 }

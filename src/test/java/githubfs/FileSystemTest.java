@@ -25,7 +25,7 @@ public class FileSystemTest {
     }
 
     @Test
-    public void shouldUsageFileForWriteWhenOpenedForReadWrite() {
+    public void shouldBeWriteUsageWhenReleasingReadWrite() {
         when(info.openMode()).thenReturn(StructFuseFileInfo.FileInfoWrapper.OpenMode.READWRITE);
         FileSystem fileSystem = new FileSystem(mountable);
 
@@ -35,7 +35,7 @@ public class FileSystemTest {
     }
 
     @Test
-    public void shouldUsageFileForWriteWhenOpenedForWrite() {
+    public void shouldBeWriteUsageWhenReleasingWrite() {
         when(info.openMode()).thenReturn(StructFuseFileInfo.FileInfoWrapper.OpenMode.WRITEONLY);
         FileSystem fileSystem = new FileSystem(mountable);
 
@@ -45,7 +45,7 @@ public class FileSystemTest {
     }
 
     @Test
-    public void shouldUsageFileForReadWhenOpenedForRead() {
+    public void shouldBeReadUsageWhenReleasingRead() {
         when(info.openMode()).thenReturn(StructFuseFileInfo.FileInfoWrapper.OpenMode.READONLY);
         FileSystem fileSystem = new FileSystem(mountable);
 

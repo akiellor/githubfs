@@ -54,4 +54,11 @@ public class GetAttrHandlerTest {
 
         verify(stat).mtime(1234L);
     }
+
+    @Test
+    public void shouldSpecifyCreatedAt() {
+        new GetAttrHandler.StatOutput(stat).createdAt(1234000L);
+
+        verify(stat).ctime(1234L);
+    }
 }

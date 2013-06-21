@@ -34,12 +34,13 @@ public class GitHubIssuesMountableTest {
 
     @Before
     public void setup() throws IOException {
-        when(ghIssue.getUpdatedAt()).thenReturn(new Date(1234));
+        when(ghIssue.getCreatedAt()).thenReturn(new Date(1234L));
+        when(ghIssue.getUpdatedAt()).thenReturn(new Date(5678L));
         when(ghIssue.getNumber()).thenReturn(1);
         when(ghIssue.getBody()).thenReturn("Foo");
         when(repository.getIssues(GHIssueState.OPEN)).thenReturn(ImmutableList.of(ghIssue));
         when(repository.getIssue(1)).thenReturn(ghIssue);
-        issue = new Issue(1234L, Content.from("Foo"));
+        issue = new Issue(1234L, 5678L, Content.from("Foo"));
     }
 
     @Test

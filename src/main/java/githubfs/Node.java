@@ -14,7 +14,9 @@ public interface Node {
 
         void executable();
 
-        void updatedAt(long time);
+        void updatedAt(Long time);
+
+        void createdAt(Long time);
     }
 
     public interface Input {

@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -21,17 +22,18 @@ public class IssueTest {
 
     @Test
     public void shouldDescribeToOutput() {
-        new Issue(1234L, content).describe(output);
+        new Issue(1234L, 5678L, content).describe(output);
 
         verify(output).content(content);
         verify(output).file();
-        verify(output).updatedAt(1234L);
+        verify(output).createdAt(1234L);
+        verify(output).updatedAt(5678L);
         verifyNoMoreInteractions(output);
     }
 
     @Test
     public void shouldUpdateWithInput() {
-        new Issue(0L, content).update(input);
+        new Issue(0L, 0L, content).update(input);
 
         verify(input).content(content);
         verifyNoMoreInteractions(input);
@@ -39,32 +41,18 @@ public class IssueTest {
 
     @Test
     public void shouldUpdateLastModifiedWhenUpdated() {
-        Issue issue = new Issue(0L, content);
+        Issue issue = new Issue(0L, 0L, content);
 
         issue.update(input);
 
-        issue.describe(new Node.Output() {
-            @Override public void content(Content content) {
-            }
+        issue.describe(output);
 
-            @Override public void file() {
-            }
-
-            @Override public void directory() {
-            }
-
-            @Override public void executable() {
-            }
-
-            @Override public void updatedAt(long time) {
-                assertThat(time, greaterThan(0L));
-            }
-        });
+        verify(output).updatedAt(argThat(greaterThan(0L)));
     }
 
     @Test
     public void shouldBeEqualByValue() {
-        assertThat(new Issue(0L, content), equalTo(new Issue(0L, content)));
-        assertThat(new Issue(1L, content), not(equalTo(new Issue(0L, content))));
+        assertThat(new Issue(0L, 1L, content), equalTo(new Issue(0L, 1L, content)));
+        assertThat(new Issue(1L, 2L, content), not(equalTo(new Issue(0L, 1L, content))));
     }
 }

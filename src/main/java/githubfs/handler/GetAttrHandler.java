@@ -47,8 +47,12 @@ public class GetAttrHandler implements Mountable.Handler<Integer> {
             stat.setMode(TypeMode.NodeType.FILE, true, false, true);
         }
 
-        @Override public void updatedAt(long time) {
+        @Override public void updatedAt(Long time) {
             stat.mtime(time / 1000);
+        }
+
+        @Override public void createdAt(Long time) {
+            stat.ctime(time / 1000);
         }
     }
 }

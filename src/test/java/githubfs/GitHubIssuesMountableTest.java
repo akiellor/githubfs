@@ -198,4 +198,22 @@ public class GitHubIssuesMountableTest {
         verify(handler).found(eq(new Path("/1")), eq(fooBar), any(Mountable.Control.class));
         verifyNoMoreInteractions(handler);
     }
+
+    @Test
+    public void shouldCloseIssueOnUnlink() throws IOException {
+        GitHubIssuesMountable mountable = new GitHubIssuesMountable(repository);
+
+        mountable.with(new Path("/1").forWrite(), new Mountable.Handler<Object>() {
+            @Override public Object found(Path path, Node node, Mountable.Control control) {
+                control.unlink();
+                return null;
+            }
+
+            @Override public Object notFound(Path path) {
+                throw new UnsupportedOperationException();
+            }
+        });
+
+        verify(ghFoo).close();
+    }
 }

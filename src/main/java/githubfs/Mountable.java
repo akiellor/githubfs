@@ -20,5 +20,6 @@ public interface Mountable {
     public interface Control {
         void release();
         void open();
+        void unlink();
     }
 }

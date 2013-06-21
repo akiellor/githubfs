@@ -2,6 +2,7 @@ package githubfs;
 
 import githubfs.handler.GithubSyncHandler;
 import githubfs.handler.OpenHandler;
+import githubfs.handler.UnlinkHandler;
 import net.fusejna.StructFuseFileInfo;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,5 +85,15 @@ public class FileSystemTest {
         fileSystem.open("/", info);
 
         verify(mountable).with(eq(Path.ROOT.forRead()), any(OpenHandler.class));
+    }
+
+
+    @Test
+    public void shouldBeRemoveFile() {
+        FileSystem fileSystem = new FileSystem(mountable);
+
+        fileSystem.unlink("/1");
+
+        verify(mountable).with(eq(Path.ROOT.forRead()), any(UnlinkHandler.class));
     }
 }

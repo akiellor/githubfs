@@ -89,5 +89,13 @@ public class GitHubIssuesMountable implements Mountable{
                 marked.add(usage.path());
             }
         }
+
+        @Override public void unlink() {
+            try {
+                repository.getIssue(Integer.valueOf(usage.path().basename())).close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@ package githubfs;
 
 import githubfs.handler.*;
 import net.fusejna.DirectoryFiller;
+import net.fusejna.FuseFilesystem;
 import net.fusejna.StructFuseFileInfo;
 import net.fusejna.StructStat;
 import net.fusejna.util.FuseFilesystemAdapterFull;
@@ -13,6 +14,10 @@ public class FileSystem extends FuseFilesystemAdapterFull {
 
     public FileSystem(Mountable mountable) {
         this.mountable = mountable;
+    }
+
+    public FuseFilesystem log(){
+        return super.log(true);
     }
 
     @Override public int getattr(String path, final StructStat.StatWrapper stat) {

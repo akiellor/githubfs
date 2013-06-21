@@ -47,4 +47,11 @@ public class GetAttrHandlerTest {
 
         verify(stat).setMode(TypeMode.NodeType.FILE, true, false, true);
     }
+
+    @Test
+    public void shouldSpecifyUpdatedAt() {
+        new GetAttrHandler.StatOutput(stat).updatedAt(1234000L);
+
+        verify(stat).mtime(1234L);
+    }
 }

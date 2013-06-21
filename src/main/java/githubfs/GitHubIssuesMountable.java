@@ -58,7 +58,7 @@ public class GitHubIssuesMountable implements Mountable{
     }
 
     private Issue toIssue(GHIssue issue) {
-        return new Issue(Content.from(issue.getBody()));
+        return new Issue(issue.getUpdatedAt().getTime(), Content.from(issue.getBody()));
     }
 
     private class GitHubControl implements Control{
@@ -80,6 +80,9 @@ public class GitHubIssuesMountable implements Mountable{
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
+                    }
+
+                    @Override public void updatedAt(long time) {
                     }
 
                     @Override public void file() {

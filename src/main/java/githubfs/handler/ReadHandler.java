@@ -51,6 +51,9 @@ public class ReadHandler implements Mountable.Handler<Integer> {
             info.flush();
         }
 
+        @Override public void updatedAt(long time) {
+        }
+
         public int getBytesRead() {
             return bytesRead;
         }

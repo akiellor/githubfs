@@ -13,6 +13,8 @@ public interface Node {
         void directory();
 
         void executable();
+
+        void updatedAt(long time);
     }
 
     public interface Input {

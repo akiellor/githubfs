@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.Date;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -34,11 +35,12 @@ public class GitHubIssuesMountableTest {
 
     @Before
     public void setup() throws IOException {
+        when(ghIssue.getUpdatedAt()).thenReturn(new Date(1234));
         when(ghIssue.getNumber()).thenReturn(1);
         when(ghIssue.getBody()).thenReturn("Foo");
         when(repository.getIssues(GHIssueState.OPEN)).thenReturn(ImmutableList.of(ghIssue));
         when(repository.getIssue(1)).thenReturn(ghIssue);
-        issue = new Issue(Content.from("Foo"));
+        issue = new Issue(1234L, Content.from("Foo"));
     }
 
     @Test

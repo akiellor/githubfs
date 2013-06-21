@@ -6,10 +6,6 @@ public class Issue implements Node {
 
     private long updatedAt;
 
-    public Issue(Long modified, Content body) {
-        this(modified, 0L, body);
-    }
-
     public Issue(long createdAt, long updatedAt, Content body) {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

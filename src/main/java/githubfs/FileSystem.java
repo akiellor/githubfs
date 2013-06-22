@@ -29,7 +29,7 @@ public class FileSystem extends FuseFilesystemAdapterFull {
     }
 
     @Override public int getattr(String path, final StructStat.StatWrapper stat) {
-        return mountable.with(new Path(path).forRead(), new GetAttrHandler(stat));
+        return mountable.with(new Path(path).forRead(), new GetAttrHandler(stat, getFuseContextUid()));
     }
 
     @Override public int read(String path, final ByteBuffer buffer, long size, long offset, final StructFuseFileInfo.FileInfoWrapper info) {

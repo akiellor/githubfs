@@ -7,16 +7,19 @@ import githubfs.Path;
 import net.fusejna.ErrorCodes;
 import net.fusejna.StructStat;
 import net.fusejna.types.TypeMode;
+import net.fusejna.types.TypeUid;
 
 public class GetAttrHandler implements Mountable.Handler<Integer> {
     private final StructStat.StatWrapper stat;
+    private final TypeUid uid;
 
-    public GetAttrHandler(StructStat.StatWrapper stat) {
+    public GetAttrHandler(StructStat.StatWrapper stat, TypeUid uid) {
         this.stat = stat;
+        this.uid = uid;
     }
 
     @Override public Integer found(Path path, Node issue, Mountable.Control control) {
-        issue.describe(new StatOutput(stat));
+        issue.describe(new StatOutput(stat, uid));
         return 0;
     }
 
@@ -26,9 +29,11 @@ public class GetAttrHandler implements Mountable.Handler<Integer> {
 
     public static class StatOutput implements Node.Output {
         private final StructStat.StatWrapper stat;
+        private final TypeUid uid;
 
-        public StatOutput(StructStat.StatWrapper stat){
+        public StatOutput(StructStat.StatWrapper stat, TypeUid uid){
             this.stat = stat;
+            this.uid = uid;
         }
 
         @Override public void content(Content content) {
@@ -37,6 +42,7 @@ public class GetAttrHandler implements Mountable.Handler<Integer> {
 
         @Override public void file() {
             stat.setMode(TypeMode.NodeType.FILE, true, true, false);
+            stat.uid(uid.longValue());
         }
 
         @Override public void directory() {
@@ -45,6 +51,7 @@ public class GetAttrHandler implements Mountable.Handler<Integer> {
 
         @Override public void executable() {
             stat.setMode(TypeMode.NodeType.FILE, true, false, true);
+            stat.uid(uid.longValue());
         }
 
         @Override public void updatedAt(Long time) {

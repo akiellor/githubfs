@@ -6,20 +6,23 @@ import githubfs.Node;
 import githubfs.Path;
 import net.fusejna.ErrorCodes;
 import net.fusejna.StructStat;
+import net.fusejna.types.TypeGid;
 import net.fusejna.types.TypeMode;
 import net.fusejna.types.TypeUid;
 
 public class GetAttrHandler implements Mountable.Handler<Integer> {
     private final StructStat.StatWrapper stat;
     private final TypeUid uid;
+    private final TypeGid gid;
 
-    public GetAttrHandler(StructStat.StatWrapper stat, TypeUid uid) {
+    public GetAttrHandler(StructStat.StatWrapper stat, TypeUid uid, TypeGid gid) {
         this.stat = stat;
         this.uid = uid;
+        this.gid = gid;
     }
 
     @Override public Integer found(Path path, Node issue, Mountable.Control control) {
-        issue.describe(new StatOutput(stat, uid));
+        issue.describe(new StatOutput(stat, uid, gid));
         return 0;
     }
 
@@ -30,10 +33,12 @@ public class GetAttrHandler implements Mountable.Handler<Integer> {
     public static class StatOutput implements Node.Output {
         private final StructStat.StatWrapper stat;
         private final TypeUid uid;
+        private final TypeGid gid;
 
-        public StatOutput(StructStat.StatWrapper stat, TypeUid uid){
+        public StatOutput(StructStat.StatWrapper stat, TypeUid uid, TypeGid gid){
             this.stat = stat;
             this.uid = uid;
+            this.gid = gid;
         }
 
         @Override public void content(Content content) {
@@ -43,15 +48,19 @@ public class GetAttrHandler implements Mountable.Handler<Integer> {
         @Override public void file() {
             stat.setMode(TypeMode.NodeType.FILE, true, true, false);
             stat.uid(uid.longValue());
+            stat.gid(gid.longValue());
         }
 
         @Override public void directory() {
-            stat.setMode(TypeMode.NodeType.DIRECTORY, true, false, true);
+            stat.setMode(TypeMode.NodeType.DIRECTORY, true, true, true);
+            stat.uid(uid.longValue());
+            stat.gid(gid.longValue());
         }
 
         @Override public void executable() {
             stat.setMode(TypeMode.NodeType.FILE, true, false, true);
             stat.uid(uid.longValue());
+            stat.gid(gid.longValue());
         }
 
         @Override public void updatedAt(Long time) {

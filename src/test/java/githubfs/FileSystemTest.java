@@ -87,12 +87,11 @@ public class FileSystemTest {
         verify(mountable).with(eq(Path.ROOT.forRead()), any(OpenHandler.class));
     }
 
-
     @Test
     public void shouldBeRemoveFile() {
         FileSystem fileSystem = new FileSystem(mountable);
 
-        fileSystem.unlink("/1");
+        fileSystem.unlink("/");
 
         verify(mountable).with(eq(Path.ROOT.forRead()), any(UnlinkHandler.class));
     }

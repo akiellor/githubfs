@@ -93,6 +93,7 @@ public class GitHubIssuesMountable implements Mountable{
         @Override public void unlink() {
             try {
                 repository.getIssue(Integer.valueOf(usage.path().basename())).close();
+                nodes.remove(usage.path());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

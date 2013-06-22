@@ -2,6 +2,7 @@ package githubfs.handler;
 
 import githubfs.Content;
 import net.fusejna.StructStat;
+import net.fusejna.types.TypeGid;
 import net.fusejna.types.TypeMode;
 import net.fusejna.types.TypeUid;
 import org.junit.Before;
@@ -16,17 +17,19 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({StructStat.StatWrapper.class, TypeUid.class})
+@PrepareForTest({StructStat.StatWrapper.class, TypeUid.class, TypeGid.class})
 public class GetAttrHandlerTest {
     @Mock StructStat.StatWrapper stat;
     @Mock TypeUid uid;
+    @Mock TypeGid gid;
     @Mock Content content;
     private GetAttrHandler.StatOutput output;
 
     @Before
     public void setUp() {
         when(uid.longValue()).thenReturn(1234L);
-        output = new GetAttrHandler.StatOutput(stat, uid);
+        when(gid.longValue()).thenReturn(5678L);
+        output = new GetAttrHandler.StatOutput(stat, uid, gid);
     }
 
     @Test
@@ -35,6 +38,7 @@ public class GetAttrHandlerTest {
 
         verify(stat).setMode(TypeMode.NodeType.FILE, true, true, false);
         verify(stat).uid(1234L);
+        verify(stat).gid(5678L);
         verifyNoMoreInteractions(stat);
     }
 
@@ -51,7 +55,9 @@ public class GetAttrHandlerTest {
     public void shouldMarkAsDirectory() {
         output.directory();
 
-        verify(stat).setMode(TypeMode.NodeType.DIRECTORY, true, false, true);
+        verify(stat).setMode(TypeMode.NodeType.DIRECTORY, true, true, true);
+        verify(stat).uid(1234L);
+        verify(stat).gid(5678L);
         verifyNoMoreInteractions(stat);
     }
 
@@ -61,6 +67,7 @@ public class GetAttrHandlerTest {
 
         verify(stat).setMode(TypeMode.NodeType.FILE, true, false, true);
         verify(stat).uid(1234L);
+        verify(stat).gid(5678L);
         verifyNoMoreInteractions(stat);
     }
 

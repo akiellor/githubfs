@@ -214,6 +214,12 @@ public class GitHubIssuesMountableTest {
             }
         });
 
+        when(repository.getIssues(GHIssueState.OPEN)).thenReturn(Lists.<GHIssue>newArrayList());
+
+        mountable.with(new Path("/1").forWrite(), handler);
+
+        verify(handler).notFound(new Path("/1"));
         verify(ghFoo).close();
+        verifyNoMoreInteractions(handler);
     }
 }

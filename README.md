@@ -1,5 +1,5 @@
-GithubFS
-========
+[Experiment] GithubFS
+=====================
 
 Expose the github api as a file system.
 
